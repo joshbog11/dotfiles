@@ -1,34 +1,25 @@
--- LSP — mason + lspconfig
+-- LSP — mason + vim.lsp.config (nvim 0.11+ native API)
 --
--- On macOS: npm-based servers (ts_ls, html, cssls, jsonls, lua_ls, pyright)
--- are installed via Homebrew in install.sh — no Mason/npm needed for those.
--- Mason only handles tools with GitHub binary releases (biome, stylua).
---
--- On Linux: Mason handles everything fine (no Nexus issue).
+-- On macOS: all servers installed via Homebrew (install.sh) — no Mason/npm.
+-- Mason kept for its UI only.
 
 return {
-  -- Mason: only install GitHub-binary tools (no npm)
-  {
-    "williamboman/mason.nvim",
-    cmd = "Mason",
+  { "williamboman/mason.nvim",
+    cmd    = "Mason",
     config = function()
       require("mason").setup({ ui = { border = "rounded" } })
     end,
   },
 
-  -- mason-lspconfig: bridge for any servers Mason does manage
-  {
-    "williamboman/mason-lspconfig.nvim",
+  { "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
-      -- All tools installed via Homebrew on macOS (see install.sh)
-      -- Mason is kept for its UI (:Mason) but doesn't auto-install anything
-      ensure_installed = {},
+      ensure_installed    = {},  -- everything via Homebrew on macOS
       automatic_installation = false,
     },
   },
 
-  -- Core LSP config
+  -- nvim-lspconfig: provides server definitions consumed by vim.lsp.config
   {
     "neovim/nvim-lspconfig",
     event        = { "BufReadPost", "BufNewFile" },
@@ -37,7 +28,6 @@ return {
       "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
-      local lspconfig    = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       local on_attach = function(_, bufnr)
@@ -53,22 +43,14 @@ return {
         map("<leader>rn", vim.lsp.buf.rename,         "Rename symbol")
       end
 
-      -- Servers installed via Homebrew (macOS) or Mason (Linux) — all in PATH
-      for _, server in ipairs({ "html", "cssls", "jsonls", "pyright", "ts_ls" }) do
-        lspconfig[server].setup({ capabilities = capabilities, on_attach = on_attach })
-      end
-
-      -- Biome (installed by Mason as a GitHub binary)
-      lspconfig.biome.setup({
+      -- ── Global defaults (applied to every server) ──────────────
+      vim.lsp.config("*", {
         capabilities = capabilities,
         on_attach    = on_attach,
-        root_dir     = lspconfig.util.root_pattern("biome.json", "biome.jsonc"),
       })
 
-      -- Lua (brew: lua-language-server)
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        on_attach    = on_attach,
+      -- ── Per-server overrides ────────────────────────────────────
+      vim.lsp.config("lua_ls", {
         settings = {
           Lua = {
             diagnostics = { globals = { "vim" } },
@@ -78,7 +60,20 @@ return {
         },
       })
 
-      -- Rounded borders
+      vim.lsp.config("biome", {
+        root_dir = function(fname)
+          return vim.fs.root(fname, { "biome.json", "biome.jsonc" })
+        end,
+      })
+
+      -- ── Enable servers (all installed via Homebrew) ─────────────
+      vim.lsp.enable({
+        "html", "cssls", "jsonls",
+        "pyright", "ts_ls",
+        "lua_ls", "biome",
+      })
+
+      -- ── UI polish ───────────────────────────────────────────────
       vim.lsp.handlers["textDocument/hover"] =
         vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
       vim.lsp.handlers["textDocument/signatureHelp"] =

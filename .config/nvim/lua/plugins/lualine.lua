@@ -1,15 +1,13 @@
--- Lualine — statusline (catppuccin theme)
+-- Lualine — statusline
+-- Uses "auto" theme so it adapts to whatever themery has active
 return {
   {
     "nvim-lualine/lualine.nvim",
     event        = "VeryLazy",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-      "catppuccin/nvim",   -- ensure catppuccin is loaded before lualine applies the theme
-    },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme                = "catppuccin",
+        theme                = "auto",
         globalstatus         = true,
         disabled_filetypes   = { statusline = { "dashboard", "alpha", "starter" } },
         component_separators = { left = "", right = "" },
