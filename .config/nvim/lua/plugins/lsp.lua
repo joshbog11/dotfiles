@@ -21,11 +21,9 @@ return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
-      -- Only tools with GitHub binary releases — safe on corporate Macs
-      ensure_installed = {
-        "biome",   -- Rust binary from GitHub, no npm
-        "stylua",  -- Rust binary from GitHub, no npm
-      },
+      -- All tools installed via Homebrew on macOS (see install.sh)
+      -- Mason is kept for its UI (:Mason) but doesn't auto-install anything
+      ensure_installed = {},
       automatic_installation = false,
     },
   },

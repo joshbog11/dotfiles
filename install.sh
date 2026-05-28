@@ -39,12 +39,13 @@ install_packages() {
 
     # ── LSP servers via Homebrew (bypasses npm/Nexus entirely) ──
     # These are installed as binaries — no npm registry involved
-    info "Installing LSP servers via Homebrew..."
+    info "Installing LSP servers + tools via Homebrew..."
     brew install typescript-language-server    # ts_ls
     brew install vscode-langservers-extracted  # html, cssls, jsonls
     brew install lua-language-server           # lua_ls
     brew install pyright                       # pyright
-    # biome is installed by Mason (GitHub binary release, no npm)
+    brew install biome                         # linter + formatter
+    brew install stylua                        # lua formatter
 
   elif command_exists apt-get; then
     info "Installing packages via apt..."

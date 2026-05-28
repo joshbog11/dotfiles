@@ -3,6 +3,7 @@ return {
   {
     "catppuccin/nvim",
     name     = "catppuccin",
+    lazy     = false,   -- must load at startup so lualine can use its theme
     priority = 1000,
     opts = {
       flavour          = "mocha",
