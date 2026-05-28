@@ -43,11 +43,17 @@ map("v", ">", ">gv")
 map("v", "p", '"_dP')
 
 -- ── Buffer navigation ─────────────────────────────────────────
-map("n", "<S-l>", "<cmd>bnext<CR>",     { desc = "Next buffer" })
-map("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Prev buffer" })
-map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+map("n", "<Tab>",   "<cmd>bnext<CR>",     { desc = "Next buffer" })
+map("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Prev buffer" })
+map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+map("n", "<leader>x",  function()
+  -- Switch to prev buffer first so the window stays open
+  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+  if #bufs > 1 then vim.cmd("bprevious") end
+  vim.cmd("bdelete #")
+end, { desc = "Close current buffer" })
 
 -- ── Diagnostics ───────────────────────────────────────────────
-map("n", "[d", vim.diagnostic.goto_prev,  { desc = "Prev diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next,  { desc = "Next diagnostic" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+map("n", "[d", vim.diagnostic.goto_prev,         { desc = "Prev diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next,         { desc = "Next diagnostic" })
+map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic" })

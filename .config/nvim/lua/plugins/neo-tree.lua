@@ -10,9 +10,9 @@ return {
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      { "<leader>e",  "<cmd>Neotree toggle<CR>",      desc = "Toggle file explorer" },
-      { "<leader>o",  "<cmd>Neotree focus<CR>",        desc = "Focus file explorer" },
-      { "<leader>ge", "<cmd>Neotree git_status<CR>",  desc = "Git status tree" },
+      { "<leader>e",  "<cmd>Neotree reveal<CR>",         desc = "Open file explorer" },
+      { "<leader>E",  "<cmd>Neotree close<CR>",         desc = "Close file explorer" },
+      { "<leader>ge", "<cmd>Neotree git_status<CR>",   desc = "Git status tree" },
     },
     opts = {
       close_if_last_window = true,
