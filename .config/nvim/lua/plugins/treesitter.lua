@@ -29,8 +29,12 @@ return {
           "vimdoc", "yaml",
         },
         auto_install = true,
-        highlight    = { enable = true },
-        indent       = { enable = true },
+        highlight = {
+          enable = true,
+          -- yaml parser has build issues on some machines — falls back to built-in syntax
+          disable = { "yaml" },
+        },
+        indent = { enable = true },
       })
     end,
   },
