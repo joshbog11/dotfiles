@@ -14,6 +14,9 @@ return {
           if not ok then return end
         end,
       })
+      -- Use system C compiler — no tree-sitter CLI needed
+      require("nvim-treesitter.install").compilers = { "cc", "clang", "gcc" }
+
       local ok, configs = pcall(require, "nvim-treesitter.configs")
       if not ok then return end
 

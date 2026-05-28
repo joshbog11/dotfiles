@@ -5,6 +5,14 @@
 -- Force public npm registry at startup so Mason installs never hit internal Nexus
 vim.env.NPM_CONFIG_REGISTRY = "https://registry.npmjs.org"
 
+-- Ensure Homebrew binaries are visible to nvim (Apple Silicon + Intel)
+local brew_paths = { "/opt/homebrew/bin", "/usr/local/bin" }
+for _, p in ipairs(brew_paths) do
+  if not vim.env.PATH:find(p, 1, true) then
+    vim.env.PATH = p .. ":" .. vim.env.PATH
+  end
+end
+
 local opt = vim.opt
 
 -- Line numbers

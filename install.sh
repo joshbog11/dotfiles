@@ -34,7 +34,7 @@ install_packages() {
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     info "Installing core packages via Homebrew..."
-    brew install tmux neovim git ripgrep fd fzf make node python3 tree-sitter
+    brew install tmux neovim git ripgrep fd fzf make node python3
     brew install --cask font-meslo-lg-nerd-font
 
     # ── LSP servers via Homebrew (bypasses npm/Nexus entirely) ──
