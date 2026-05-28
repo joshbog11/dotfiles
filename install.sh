@@ -46,6 +46,7 @@ install_packages() {
     brew install pyright                       # pyright
     brew install biome                         # linter + formatter
     brew install stylua                        # lua formatter
+    brew install lazygit                       # git TUI
 
   elif command_exists apt-get; then
     info "Installing packages via apt..."
