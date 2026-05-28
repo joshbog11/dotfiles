@@ -1,0 +1,6 @@
+# Nvim lazy-lock (commit this if you want reproducible plugin versions)
+# .config/nvim/lazy-lock.json
+
+# OS
+.DS_Store
+Thumbs.db

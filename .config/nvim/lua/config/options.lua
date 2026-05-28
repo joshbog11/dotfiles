@@ -1,0 +1,51 @@
+-- ============================================================
+-- options.lua — core vim options
+-- ============================================================
+
+local opt = vim.opt
+
+-- Line numbers
+opt.number         = true
+opt.relativenumber = true
+
+-- Indentation
+opt.tabstop        = 2
+opt.shiftwidth     = 2
+opt.expandtab      = true
+opt.smartindent    = true
+
+-- Wrapping
+opt.wrap           = false
+
+-- Search
+opt.ignorecase     = true
+opt.smartcase      = true
+opt.hlsearch       = false
+opt.incsearch      = true
+
+-- Appearance
+opt.termguicolors  = true
+opt.signcolumn     = "yes"
+opt.cursorline     = true
+opt.scrolloff      = 8
+opt.sidescrolloff  = 8
+
+-- Splits open to the right / below (feels natural)
+opt.splitright     = true
+opt.splitbelow     = true
+
+-- Clipboard — sync with system clipboard
+opt.clipboard      = "unnamedplus"
+
+-- Persistent undo
+opt.undofile       = true
+
+-- Faster update time (for gitsigns etc.)
+opt.updatetime     = 250
+opt.timeoutlen     = 300
+
+-- Don't show mode in cmdline (lualine handles it)
+opt.showmode       = false
+
+-- Keep signcolumn on by default
+opt.signcolumn     = "yes"
