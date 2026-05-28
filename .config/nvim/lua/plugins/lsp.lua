@@ -5,8 +5,6 @@ return {
     "williamboman/mason.nvim",
     cmd = "Mason",
     config = function()
-      -- Bypass internal Nexus: force public npm registry for Mason installs
-      vim.env.NPM_CONFIG_REGISTRY = "https://registry.npmjs.org"
       require("mason").setup({ ui = { border = "rounded" } })
     end,
   },

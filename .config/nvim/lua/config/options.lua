@@ -2,6 +2,9 @@
 -- options.lua — core vim options
 -- ============================================================
 
+-- Force public npm registry at startup so Mason installs never hit internal Nexus
+vim.env.NPM_CONFIG_REGISTRY = "https://registry.npmjs.org"
+
 local opt = vim.opt
 
 -- Line numbers
