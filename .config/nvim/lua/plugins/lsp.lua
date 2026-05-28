@@ -1,6 +1,13 @@
 -- LSP — mason + lspconfig
+--
+-- On macOS: npm-based servers (ts_ls, html, cssls, jsonls, lua_ls, pyright)
+-- are installed via Homebrew in install.sh — no Mason/npm needed for those.
+-- Mason only handles tools with GitHub binary releases (biome, stylua).
+--
+-- On Linux: Mason handles everything fine (no Nexus issue).
+
 return {
-  -- Mason: install LSP servers, linters, formatters
+  -- Mason: only install GitHub-binary tools (no npm)
   {
     "williamboman/mason.nvim",
     cmd = "Mason",
@@ -9,22 +16,17 @@ return {
     end,
   },
 
-  -- Bridge mason ↔ lspconfig
+  -- mason-lspconfig: bridge for any servers Mason does manage
   {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "williamboman/mason.nvim" },
     opts = {
+      -- Only tools with GitHub binary releases — safe on corporate Macs
       ensure_installed = {
-        "lua_ls",
-        "ts_ls",    -- TypeScript / JavaScript
-        "cssls",
-        "jsonls",
-        "pyright",
-        "biome",    -- linter + formatter (replaces eslint)
-        -- "html", -- removed: npm-based, hits Nexus. Install manually if needed:
-        --         -- :MasonInstall html-lsp
+        "biome",   -- Rust binary from GitHub, no npm
+        "stylua",  -- Rust binary from GitHub, no npm
       },
-      automatic_installation = false, -- don't silently install on every open
+      automatic_installation = false,
     },
   },
 
@@ -44,7 +46,6 @@ return {
         local map = function(keys, func, desc)
           vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
         end
-
         map("gd",         vim.lsp.buf.definition,     "Go to definition")
         map("gD",         vim.lsp.buf.declaration,    "Go to declaration")
         map("gr",         vim.lsp.buf.references,     "References")
@@ -52,27 +53,21 @@ return {
         map("K",          vim.lsp.buf.hover,          "Hover docs")
         map("<leader>ca", vim.lsp.buf.code_action,    "Code action")
         map("<leader>rn", vim.lsp.buf.rename,         "Rename symbol")
-        -- <leader>cf is handled by conform.nvim (format on save)
       end
 
-      -- Simple servers
-      for _, server in ipairs({ "cssls", "jsonls", "pyright" }) do
+      -- Servers installed via Homebrew (macOS) or Mason (Linux) — all in PATH
+      for _, server in ipairs({ "html", "cssls", "jsonls", "pyright", "ts_ls" }) do
         lspconfig[server].setup({ capabilities = capabilities, on_attach = on_attach })
       end
 
-      -- TypeScript
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        on_attach    = on_attach,
-      })
-
-      -- Biome (lint + format — used alongside conform.nvim)
+      -- Biome (installed by Mason as a GitHub binary)
       lspconfig.biome.setup({
         capabilities = capabilities,
         on_attach    = on_attach,
+        root_dir     = lspconfig.util.root_pattern("biome.json", "biome.jsonc"),
       })
 
-      -- Lua
+      -- Lua (brew: lua-language-server)
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
         on_attach    = on_attach,
@@ -91,7 +86,6 @@ return {
       vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-      -- Diagnostic config
       vim.diagnostic.config({
         signs = {
           text = {

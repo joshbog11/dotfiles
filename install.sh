@@ -33,13 +33,24 @@ install_packages() {
       info "Installing Homebrew..."
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
-    info "Installing packages via Homebrew..."
+    info "Installing core packages via Homebrew..."
     brew install tmux neovim git ripgrep fd fzf make node python3
-    brew install --cask font-meslo-lg-nerd-font  # Nerd Font for icons
+    brew install --cask font-meslo-lg-nerd-font
+
+    # ── LSP servers via Homebrew (bypasses npm/Nexus entirely) ──
+    # These are installed as binaries — no npm registry involved
+    info "Installing LSP servers via Homebrew..."
+    brew install typescript-language-server    # ts_ls
+    brew install vscode-langservers-extracted  # html, cssls, jsonls
+    brew install lua-language-server           # lua_ls
+    brew install pyright                       # pyright
+    # biome is installed by Mason (GitHub binary release, no npm)
+
   elif command_exists apt-get; then
     info "Installing packages via apt..."
     sudo apt-get update -qq
     sudo apt-get install -y tmux neovim git ripgrep fd-find fzf make nodejs python3 python3-pip curl
+    # On Linux, Mason handles LSP installs fine (no Nexus issue)
   elif command_exists dnf; then
     info "Installing packages via dnf..."
     sudo dnf install -y tmux neovim git ripgrep fd-find fzf make nodejs python3 python3-pip curl
@@ -66,18 +77,13 @@ install_tpm() {
 # ── Symlink dotfiles ──────────────────────────────────────────
 link_dotfiles() {
   info "Symlinking dotfiles..."
-
-  # tmux
-  symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-
-  # neovim
-  symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+  symlink "$DOTFILES_DIR/.tmux.conf"    "$HOME/.tmux.conf"
+  symlink "$DOTFILES_DIR/.config/nvim"  "$HOME/.config/nvim"
 }
 
 # ── Install tmux plugins ──────────────────────────────────────
 install_tmux_plugins() {
   info "Installing tmux plugins via TPM..."
-  # Headless TPM install
   "$HOME/.tmux/plugins/tpm/bin/install_plugins" || true
 }
 
@@ -87,14 +93,15 @@ print_summary() {
   echo -e "${GREEN}✓ Done!${NC}"
   echo ""
   echo "Next steps:"
-  echo "  1. Start a new tmux session: tmux"
-  echo "  2. Press  prefix + I  (C-Space + I) to install tmux plugins"
-  echo "  3. Open neovim: nvim"
-  echo "     Lazy.nvim will auto-install all plugins on first launch"
-  echo "  4. In nvim, run :MasonInstall to install additional LSP servers"
+  echo "  1. Start tmux:  tmux"
+  echo "     (plugins were installed headlessly — no C-Space+I needed)"
+  echo "  2. Open neovim: nvim"
+  echo "     Lazy.nvim will auto-install plugins on first launch."
+  echo "     Mason will install biome (GitHub binary — no npm needed)."
+  echo "  3. LSP servers (html, ts, lua, css, json) were installed via Homebrew."
+  echo "     No Mason/npm required for those."
   echo ""
-  echo "Tip: Install a Nerd Font and set it in your terminal for icons."
-  echo "     Recommended: MesloLGS NF or JetBrainsMono Nerd Font"
+  echo "Tip: Set your terminal font to 'MesloLGS Nerd Font' for icons."
 }
 
 # ── Main ──────────────────────────────────────────────────────
