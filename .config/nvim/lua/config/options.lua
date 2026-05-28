@@ -61,6 +61,30 @@ opt.showmode       = false
 -- Keep signcolumn on by default
 opt.signcolumn     = "yes"
 
+-- Enable built-in syntax highlighting for filetypes not handled by treesitter
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "yaml", "xml" },
+  callback = function()
+    if not vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
+      vim.cmd("syntax on")
+    end
+  end,
+})
+
+-- Force correct filetypes — overrides any bad detection from plugins or path matching
+vim.filetype.add({
+  extension = {
+    ts   = "typescript",
+    tsx  = "typescriptreact",
+    js   = "javascript",
+    jsx  = "javascriptreact",
+    mts  = "typescript",
+    cts  = "typescript",
+    yaml = "yaml",
+    yml  = "yaml",
+  },
+})
+
 -- Reset terminal color palette when nvim exits so other apps (k9s etc.) are unaffected
 vim.api.nvim_create_autocmd("VimLeave", {
   callback = function()

@@ -5,15 +5,6 @@ return {
     build = ":TSUpdate",
     lazy  = false,
     config = function()
-      -- Re-apply highlighting when switching buffers (catches files opened before parsers installed)
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-        callback = function(args)
-          local buf = args.buf
-          if vim.bo[buf].buftype ~= "" then return end
-          local ok, _ = pcall(vim.treesitter.start, buf)
-          if not ok then return end
-        end,
-      })
       -- Use system C compiler — no tree-sitter CLI needed
       require("nvim-treesitter.install").compilers = { "cc", "clang", "gcc" }
 
@@ -26,13 +17,14 @@ return {
           "go", "html", "javascript", "json", "lua",
           "markdown", "markdown_inline", "python",
           "rust", "toml", "tsx", "typescript", "vim",
-          "vimdoc", "yaml",
+          "vimdoc",
         },
         auto_install = true,
         highlight = {
-          enable = true,
-          -- yaml parser has build issues on some machines — falls back to built-in syntax
-          disable = { "yaml" },
+          enable  = true,
+          -- yaml and xml parsers fail to build without tree-sitter CLI
+          -- nvim's built-in syntax highlighter handles these fine
+          disable = { "yaml", "xml" },
         },
         indent = { enable = true },
       })
