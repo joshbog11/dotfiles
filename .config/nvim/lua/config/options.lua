@@ -52,3 +52,13 @@ opt.showmode       = false
 
 -- Keep signcolumn on by default
 opt.signcolumn     = "yes"
+
+-- Reset terminal color palette when nvim exits so other apps (k9s etc.) are unaffected
+vim.api.nvim_create_autocmd("VimLeave", {
+  callback = function()
+    io.write("\027]104\007")  -- reset terminal color palette
+    io.write("\027]110\007")  -- reset terminal foreground
+    io.write("\027]111\007")  -- reset terminal background
+    io.write("\027]112\007")  -- reset cursor color
+  end,
+})
