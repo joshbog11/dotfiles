@@ -74,10 +74,8 @@ return {
       })
 
       -- ── UI polish ───────────────────────────────────────────────
-      vim.lsp.handlers["textDocument/hover"] =
-        vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+      -- nvim 0.11+: single option sets rounded border on ALL floating windows
+      vim.o.winborder = "rounded"
 
       vim.diagnostic.config({
         signs = {

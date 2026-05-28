@@ -5,6 +5,15 @@ return {
     build = ":TSUpdate",
     lazy  = false,
     config = function()
+      -- Re-apply highlighting when switching buffers (catches files opened before parsers installed)
+      vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+        callback = function(args)
+          local buf = args.buf
+          if vim.bo[buf].buftype ~= "" then return end
+          local ok, _ = pcall(vim.treesitter.start, buf)
+          if not ok then return end
+        end,
+      })
       local ok, configs = pcall(require, "nvim-treesitter.configs")
       if not ok then return end
 
