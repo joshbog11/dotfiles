@@ -42,7 +42,6 @@ return {
           before      = [[ require("sora").setup() ]],
         },
       },
-      themeConfigFile = vim.fn.stdpath("data") .. "/themery.lua",
       livePreview = true,
     },
     keys = {
