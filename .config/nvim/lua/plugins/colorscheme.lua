@@ -12,7 +12,7 @@ return {
   { "ellisonleao/gruvbox.nvim",     lazy = true },
   { "EdenEast/nightfox.nvim",       lazy = true },
   { "sainnhe/everforest",           lazy = true },
-  { "aejkatappaja/sora.nvim",       lazy = true },
+  { "Aejkatappaja/sora",            lazy = true },
 
   -- ── Themery — live preview theme switcher ──────────────────
   {
