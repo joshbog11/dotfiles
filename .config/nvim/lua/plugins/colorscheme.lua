@@ -5,13 +5,14 @@
 return {
 
   -- ── Themes ─────────────────────────────────────────────────
-  { "catppuccin/nvim",           name = "catppuccin", lazy = true },
-  { "folke/tokyonight.nvim",     lazy = true },
-  { "rebelot/kanagawa.nvim",     lazy = true },
-  { "rose-pine/neovim",          name = "rose-pine", lazy = true },
-  { "ellisonleao/gruvbox.nvim",  lazy = true },
-  { "EdenEast/nightfox.nvim",    lazy = true },
-  { "sainnhe/everforest",        lazy = true },
+  { "catppuccin/nvim",              name = "catppuccin", lazy = true },
+  { "folke/tokyonight.nvim",        lazy = true },
+  { "rebelot/kanagawa.nvim",        lazy = true },
+  { "rose-pine/neovim",             name = "rose-pine", lazy = true },
+  { "ellisonleao/gruvbox.nvim",     lazy = true },
+  { "EdenEast/nightfox.nvim",       lazy = true },
+  { "sainnhe/everforest",           lazy = true },
+  { "aejkatappaja/sora.nvim",       lazy = true },
 
   -- ── Themery — live preview theme switcher ──────────────────
   {
@@ -35,6 +36,11 @@ return {
         { name = "Nightfox",            colorscheme = "nightfox" },
         { name = "Carbonfox",           colorscheme = "carbonfox" },
         { name = "Everforest",          colorscheme = "everforest" },
+        {
+          name        = "Sora",
+          colorscheme = "sora",
+          before      = [[ require("sora").setup() ]],
+        },
       },
       themeConfigFile = vim.fn.stdpath("data") .. "/themery.lua",
       livePreview = true,
