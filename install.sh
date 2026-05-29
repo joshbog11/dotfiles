@@ -37,27 +37,22 @@ install_packages() {
     brew install tmux neovim git ripgrep fd fzf make node python3
     brew install --cask font-meslo-lg-nerd-font
 
-    # ── LSP servers via Homebrew (bypasses npm/Nexus entirely) ──
-    # These are installed as binaries — no npm registry involved
     info "Installing LSP servers + tools via Homebrew..."
-    brew install typescript-language-server    # ts_ls
-    brew install vscode-langservers-extracted  # html, cssls, jsonls
-    brew install lua-language-server           # lua_ls
-    brew install pyright                       # pyright
-    brew install biome                         # linter + formatter
-    brew install stylua                        # lua formatter
-    brew install lazygit                       # git TUI
+    brew install typescript-language-server
+    brew install vscode-langservers-extracted
+    brew install lua-language-server
+    brew install pyright
+    brew install biome
+    brew install stylua
+    brew install lazygit
 
   elif command_exists apt-get; then
     info "Installing packages via apt..."
     sudo apt-get update -qq
     sudo apt-get install -y tmux neovim git ripgrep fd-find fzf make nodejs python3 python3-pip curl
-    # On Linux, Mason handles LSP installs fine (no Nexus issue)
   elif command_exists dnf; then
-    info "Installing packages via dnf..."
     sudo dnf install -y tmux neovim git ripgrep fd-find fzf make nodejs python3 python3-pip curl
   elif command_exists pacman; then
-    info "Installing packages via pacman..."
     sudo pacman -Sy --noconfirm tmux neovim git ripgrep fd fzf make nodejs python python-pip curl
   else
     warn "No supported package manager found. Install tmux, neovim, git, ripgrep, fd, fzf manually."
@@ -79,8 +74,39 @@ install_tpm() {
 # ── Symlink dotfiles ──────────────────────────────────────────
 link_dotfiles() {
   info "Symlinking dotfiles..."
-  symlink "$DOTFILES_DIR/.tmux.conf"    "$HOME/.tmux.conf"
-  symlink "$DOTFILES_DIR/.config/nvim"  "$HOME/.config/nvim"
+  symlink "$DOTFILES_DIR/.tmux.conf"   "$HOME/.tmux.conf"
+  symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+}
+
+# ── Sora theme extras ─────────────────────────────────────────
+install_sora() {
+  info "Installing Sora theme extras..."
+  local sora_dir="$DOTFILES_DIR/extras/sora"
+
+  # tmux — symlink so the source-file in .tmux.conf finds it
+  symlink "$sora_dir/sora.tmux.conf" "$HOME/sora.tmux.conf"
+
+  # lazygit — merge sora theme into lazygit config
+  if command_exists lazygit || [[ "$OS" == "Darwin" ]]; then
+    local lg_config_dir="$HOME/Library/Application Support/lazygit"
+    [[ "$OS" != "Darwin" ]] && lg_config_dir="$HOME/.config/lazygit"
+    mkdir -p "$lg_config_dir"
+    local lg_config="$lg_config_dir/config.yml"
+    if [ ! -f "$lg_config" ]; then
+      cp "$sora_dir/sora-lazygit.yml" "$lg_config"
+      info "Lazygit sora theme installed"
+    else
+      warn "Lazygit config already exists — manually merge extras/sora/sora-lazygit.yml if needed"
+    fi
+  fi
+
+  # iTerm2 — open the .itermcolors file so iTerm imports it automatically
+  if [[ "$OS" == "Darwin" ]] && command_exists open; then
+    info "Importing Sora iTerm2 color scheme..."
+    open "$sora_dir/sora.itermcolors"
+    info "iTerm2 will open and import Sora — click OK, then set it in:"
+    info "  iTerm2 → Preferences → Profiles → Colors → Color Presets → Sora"
+  fi
 }
 
 # ── Install tmux plugins ──────────────────────────────────────
@@ -95,15 +121,14 @@ print_summary() {
   echo -e "${GREEN}✓ Done!${NC}"
   echo ""
   echo "Next steps:"
-  echo "  1. Start tmux:  tmux"
-  echo "     (plugins were installed headlessly — no C-Space+I needed)"
-  echo "  2. Open neovim: nvim"
-  echo "     Lazy.nvim will auto-install plugins on first launch."
-  echo "     Mason will install biome (GitHub binary — no npm needed)."
-  echo "  3. LSP servers (html, ts, lua, css, json) were installed via Homebrew."
-  echo "     No Mason/npm required for those."
+  echo "  1. Start tmux: tmux"
+  echo "  2. Open nvim:  nvim  (Lazy auto-installs plugins on first launch)"
+  echo "  3. In nvim:    <leader>th to pick your theme"
   echo ""
-  echo "Tip: Set your terminal font to 'MesloLGS Nerd Font' for icons."
+  echo "Sora theme installed for: tmux, nvim, iTerm2, lazygit"
+  echo "iTerm2: Preferences → Profiles → Colors → Color Presets → Sora"
+  echo ""
+  echo "Font: Make sure your terminal is set to 'MesloLGS Nerd Font'"
 }
 
 # ── Main ──────────────────────────────────────────────────────
@@ -112,6 +137,7 @@ main() {
   install_packages
   install_tpm
   link_dotfiles
+  install_sora
   install_tmux_plugins
   print_summary
 }
