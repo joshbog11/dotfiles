@@ -85,6 +85,17 @@ vim.filetype.add({
   },
 })
 
+-- Autocmd fallback: force yaml for .yaml/.yml files that slip through
+-- (swagger, helm-overrides, and similar get misdetected by plugins)
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern  = { "*.yaml", "*.yml" },
+  callback = function(args)
+    if vim.bo[args.buf].filetype ~= "yaml" then
+      vim.bo[args.buf].filetype = "yaml"
+    end
+  end,
+})
+
 -- Reset terminal color palette when nvim exits so other apps (k9s etc.) are unaffected
 vim.api.nvim_create_autocmd("VimLeave", {
   callback = function()
