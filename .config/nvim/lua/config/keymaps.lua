@@ -61,5 +61,5 @@ map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 
 -- UFO Fold Keymaps --
-vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "Open all folds" })
-vim.keymap.set("n", "zM", require("ufo").openAllFolds, { desc = "Close all folds" })
+vim.keymap.set("n", "zR", function() require("ufo").openAllFolds, { desc = "Open all folds" })
+vim.keymap.set("n", "zM", function() require("ufo").openAllFolds, { desc = "Close all folds" })
