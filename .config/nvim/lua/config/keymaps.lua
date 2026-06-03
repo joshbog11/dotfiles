@@ -5,14 +5,14 @@
 local map = vim.keymap.set
 
 -- Leader key
-vim.g.mapleader      = " "
+vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- ── Normal mode ──────────────────────────────────────────────
 -- Save
-map("n", "<leader>w", "<cmd>w<CR>",  { desc = "Save file" })
+map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 -- Quit
-map("n", "<leader>q", "<cmd>q<CR>",  { desc = "Quit" })
+map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
 
 -- Clear search highlight
 map("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -24,16 +24,16 @@ map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 
 -- Resize windows
-map("n", "<C-Up>",    "<cmd>resize +2<CR>",          { desc = "Increase height" })
-map("n", "<C-Down>",  "<cmd>resize -2<CR>",          { desc = "Decrease height" })
-map("n", "<C-Left>",  "<cmd>vertical resize -2<CR>", { desc = "Decrease width" })
+map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase height" })
+map("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease height" })
+map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease width" })
 map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase width" })
 
 -- Move lines up/down
-map("n", "<A-j>", "<cmd>m .+1<CR>==",        { desc = "Move line down" })
-map("n", "<A-k>", "<cmd>m .-2<CR>==",        { desc = "Move line up" })
-map("v", "<A-j>", ":m '>+1<CR>gv=gv",       { desc = "Move selection down" })
-map("v", "<A-k>", ":m '<-2<CR>gv=gv",       { desc = "Move selection up" })
+map("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+map("n", "<A-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- Stay in indent mode
 map("v", "<", "<gv")
@@ -43,17 +43,23 @@ map("v", ">", ">gv")
 map("v", "p", '"_dP')
 
 -- ── Buffer navigation ─────────────────────────────────────────
-map("n", "<Tab>",   "<cmd>bnext<CR>",     { desc = "Next buffer" })
+map("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 map("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Prev buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
-map("n", "<leader>x",  function()
-  -- Switch to prev buffer first so the window stays open
-  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
-  if #bufs > 1 then vim.cmd("bprevious") end
-  vim.cmd("bdelete #")
+map("n", "<leader>x", function()
+	-- Switch to prev buffer first so the window stays open
+	local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+	if #bufs > 1 then
+		vim.cmd("bprevious")
+	end
+	vim.cmd("bdelete #")
 end, { desc = "Close current buffer" })
 
 -- ── Diagnostics ───────────────────────────────────────────────
-map("n", "[d", vim.diagnostic.goto_prev,         { desc = "Prev diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next,         { desc = "Next diagnostic" })
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+
+-- UFO Fold Keymaps --
+vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "Open all folds" })
+vim.keymap.set("n", "zM", require("ufo").openAllFolds, { desc = "Close all folds" })

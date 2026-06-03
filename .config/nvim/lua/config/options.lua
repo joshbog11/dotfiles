@@ -61,6 +61,13 @@ opt.showmode       = false
 -- Keep signcolumn on by default
 opt.signcolumn     = "yes"
 
+
+-- Enable treesitter for data structure folding
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
 -- Enable built-in syntax highlighting for filetypes not handled by treesitter
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "yaml", "xml" },
