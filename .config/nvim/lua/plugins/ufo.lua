@@ -7,4 +7,5 @@ return {
         return {'treesitter', 'indent'}
       end
     })
+  end
 }
