@@ -69,7 +69,7 @@ vim.o.foldenable = true
 
 -- Enable built-in syntax highlighting for filetypes not handled by treesitter
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "yaml", "xml" },
+	pattern = { "yaml", "xml", "ts", "js", "md", "json", "sh" },
 	callback = function()
 		if not vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
 			vim.cmd("syntax on")
