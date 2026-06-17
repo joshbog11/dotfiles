@@ -112,3 +112,15 @@ vim.api.nvim_create_autocmd("VimLeave", {
 		io.write("\027]112\007") -- reset cursor color
 	end,
 })
+
+-- Re-attach treesitter to the first buffer after all plugins have loaded
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		vim.schedule(function()
+			local buf = vim.api.nvim_get_current_buf()
+			if vim.bo[buf].filetype ~= "" then
+				pcall(vim.treesitter.start, buf)
+			end
+		end)
+	end,
+})
