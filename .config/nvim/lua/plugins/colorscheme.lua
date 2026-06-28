@@ -44,7 +44,7 @@ return {
 				{ name = "One Dark Pro", colorscheme = "onedark_dark" },
 				{ name = "One Dark Pro Vivid", colorscheme = "onedark_vivid" },
 				{ name = "One Dark Pro Warm", colorscheme = "onelight" },
-				{ name = "github-theme", colorscheme = "github_dark_high_contrast" },
+				{ name = "Github Theme", colorscheme = "github_dark_high_contrast" },
 			},
 			livePreview = true,
 		},
