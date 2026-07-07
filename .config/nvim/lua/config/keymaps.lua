@@ -61,5 +61,24 @@ map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 
 -- UFO Fold Keymaps --
-vim.keymap.set("n", "zR", function() require("ufo").openAllFolds() end, { desc = "Open all folds" })
-vim.keymap.set("n", "zM", function() require("ufo").openAllFolds() end, { desc = "Close all folds" })
+vim.keymap.set("n", "zR", function()
+	require("ufo").openAllFolds()
+end, { desc = "Open all folds" })
+vim.keymap.set("n", "zM", function()
+	require("ufo").openAllFolds()
+end, { desc = "Close all folds" })
+
+-- Yank --
+map("x", "<leader>p", [["_dP"]], opts)
+map({ "n", "v" }, "<leader>y", [["+y]], opts)
+map("n", "<leader>Y", [["+Y]], opts)
+
+-- Selection Macros --
+map("n", "<leader>sa", "ggVG", { desc = "Select entire file contents" })
+map("n", "<leader>sw", "viw", { desc = "Select inner word" })
+map("n", "<leader>sb", "vi(", { desc = "Select inner parenthesis" })
+map("n", "<leader>sB", "vi{", { desc = "Select inner curly braces" })
+map("n", "<leader>sq", 'vi"', { desc = "Select inner double quotes" })
+
+-- Replacement Macros --
+map("n", "<leader>rp", [[:%s/\<<C-r><C-w>\>/]], { desc = "Replace word under cursor" })
