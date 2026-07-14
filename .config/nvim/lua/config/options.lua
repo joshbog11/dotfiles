@@ -124,3 +124,40 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		end)
 	end,
 })
+
+-- Transparency
+local function apply_transparency(enabled)
+	if enabled then
+		vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+		vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+		vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+		vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+		vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
+	else
+		if vim.g.colors_name then
+			vim.cmd("colorscheme " .. vim.g.colors_name)
+		end
+	end
+	vim.o.winblend = 8
+	vim.o.pumblend = 8
+	vim.g.transparent_enabled = enabled
+end
+
+-- Set to true to enable by default
+vim.g.transparent_enabled = true
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+	callback = function()
+		if vim.g.transparent_enabled then
+			vim.schedule(function()
+				apply_transparency(true)
+			end)
+		end
+	end,
+})
+
+vim.keymap.set("n", "<leader>tt", function()
+	apply_transparency(not vim.g.transparent_enabled)
+	vim.notify("Transparency " .. (vim.g.transparent_enabled and "on" or "off"))
+end, { desc = "Toggle transparency" })
