@@ -30,7 +30,7 @@ return {
 				{ name = "Tokyo Night Moon", colorscheme = "tokyonight-moon" },
 				{ name = "Kanagawa Wave", colorscheme = "kanagawa-wave" },
 				{ name = "Kanagawa Dragon", colorscheme = "kanagawa-dragon" },
-				{ name = "Rose Pine", colorscheme = "rose-pine" },
+				{ name = "Rose Pine", colorscheme = "rose-pine", disable_background = true },
 				{ name = "Rose Pine Moon", colorscheme = "rose-pine-moon" },
 				{ name = "Gruvbox Dark", colorscheme = "gruvbox" },
 				{ name = "Nightfox", colorscheme = "nightfox" },
