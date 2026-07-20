@@ -14,6 +14,7 @@ return {
 	{ "Aejkatappaja/sora", lazy = true },
 	{ "olimorris/onedarkpro.nvim", lazy = true },
 	{ "projekt0n/github-nvim-theme", lazy = true },
+	{ "sainnhe/gruvbox-material", lazy = true },
 	-- ── Themery — live preview theme switcher ──────────────────
 	{
 		"zaldih/themery.nvim",
@@ -45,6 +46,22 @@ return {
 				{ name = "One Dark Pro Vivid", colorscheme = "onedark_vivid" },
 				{ name = "One Dark Pro Warm", colorscheme = "onelight" },
 				{ name = "Github Theme", colorscheme = "github_dark_high_contrast" },
+				{ name = "Gruvbox Material Dark", colorscheme = "gruvbox-material" },
+				{
+					name = "Gruvbox Material Soft",
+					colorscheme = "gruvbox-material",
+					before = [[ vim.g.gruvbox_material_background = "soft" ]],
+				},
+				{
+					name = "Gruvbox Material Medium",
+					colorscheme = "gruvbox-material",
+					before = [[ vim.g.gruvbox_material_background = "medium" ]],
+				},
+				{
+					name = "Gruvbox Material Hard",
+					colorscheme = "gruvbox-material",
+					before = [[ vim.g.gruvbox_material_background = "hard" ]],
+				},
 			},
 			livePreview = true,
 		},
