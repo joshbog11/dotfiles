@@ -15,6 +15,47 @@ return {
 	{ "olimorris/onedarkpro.nvim", lazy = true },
 	{ "projekt0n/github-nvim-theme", lazy = true },
 	{ "sainnhe/gruvbox-material", lazy = true },
+	{
+		"Th3Whit3Wolf/one-nvim",
+		lazy = true,
+
+		-- one-nvim reads the removed Neovim `t_Co` option.
+		-- Patch it after every installation/update.
+		build = function(plugin)
+			local path = plugin.dir .. "/lua/one-nvim.lua"
+			local lines = vim.fn.readfile(path)
+			local patched = false
+
+			for index, line in ipairs(lines) do
+				if line:find("local _USE_256 = tonumber(go.t_Co)", 1, true) then
+					lines[index] = "local _USE_256 = true"
+
+					if lines[index + 1] and lines[index + 1]:find("string.find(vim.env.TERM", 1, true) then
+						table.remove(lines, index + 1)
+					end
+
+					patched = true
+					break
+				end
+			end
+
+			-- Avoid failing when the patch has already been applied.
+			if not patched then
+				for _, line in ipairs(lines) do
+					if line == "local _USE_256 = true" then
+						patched = true
+						break
+					end
+				end
+			end
+
+			if not patched then
+				error("Could not apply the one-nvim compatibility patch")
+			end
+
+			vim.fn.writefile(lines, path)
+		end,
+	},
 	-- ── Themery — live preview theme switcher ──────────────────
 	{
 		"zaldih/themery.nvim",
@@ -64,6 +105,16 @@ return {
 					name = "Gruvbox Material Hard",
 					colorscheme = "gruvbox-material",
 					before = [[ vim.g.gruvbox_material_background = "hard" ]],
+				},
+				{
+					name = "One Nvim Dark",
+					colorscheme = "one-nvim",
+					before = [[ vim.o.background = "dark" ]],
+				},
+				{
+					name = "One Nvim Light",
+					colorscheme = "one-nvim",
+					before = [[ vim.o.background = "light" ]],
 				},
 			},
 			livePreview = true,
