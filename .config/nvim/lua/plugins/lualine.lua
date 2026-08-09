@@ -1,50 +1,38 @@
--- Lualine — Atom One Light statusline
-
-local colors = {
-	bg = "#fafafa",
-	bg_alt = "#e5e5e6",
-	fg = "#383a42",
-	muted = "#686b77",
-	blue = "#4078f2",
-	green = "#50a14f",
-	purple = "#a626a4",
-	red = "#e45649",
-	orange = "#c18401",
-	cyan = "#0184bb",
-	white = "#ffffff",
-}
-
-local atom_one_light = {
+local kitty_default = {
 	normal = {
-		a = { fg = colors.white, bg = colors.blue, gui = "bold" },
-		b = { fg = colors.fg, bg = colors.bg_alt },
-		c = { fg = colors.fg, bg = colors.bg },
+		a = { fg = "#ffffff", bg = "#0d73cc", gui = "bold" },
+		b = { fg = "#dddddd", bg = "#222222" },
+		c = { fg = "#dddddd", bg = "#000000" },
 	},
 
 	insert = {
-		a = { fg = colors.white, bg = colors.green, gui = "bold" },
+		a = { fg = "#000000", bg = "#23d18b", gui = "bold" },
+		b = { fg = "#dddddd", bg = "#222222" },
+		c = { fg = "#dddddd", bg = "#000000" },
 	},
 
 	visual = {
-		a = { fg = colors.white, bg = colors.purple, gui = "bold" },
+		a = { fg = "#ffffff", bg = "#7d57c2", gui = "bold" },
+		b = { fg = "#dddddd", bg = "#222222" },
+		c = { fg = "#dddddd", bg = "#000000" },
 	},
 
 	replace = {
-		a = { fg = colors.white, bg = colors.red, gui = "bold" },
+		a = { fg = "#ffffff", bg = "#f2201f", gui = "bold" },
+		b = { fg = "#dddddd", bg = "#222222" },
+		c = { fg = "#dddddd", bg = "#000000" },
 	},
 
 	command = {
-		a = { fg = colors.white, bg = colors.orange, gui = "bold" },
-	},
-
-	terminal = {
-		a = { fg = colors.white, bg = colors.cyan, gui = "bold" },
+		a = { fg = "#000000", bg = "#e5e510", gui = "bold" },
+		b = { fg = "#dddddd", bg = "#222222" },
+		c = { fg = "#dddddd", bg = "#000000" },
 	},
 
 	inactive = {
-		a = { fg = colors.muted, bg = colors.bg_alt },
-		b = { fg = colors.muted, bg = colors.bg },
-		c = { fg = colors.muted, bg = colors.bg },
+		a = { fg = "#767676", bg = "#000000" },
+		b = { fg = "#767676", bg = "#000000" },
+		c = { fg = "#767676", bg = "#000000" },
 	},
 }
 
@@ -56,7 +44,7 @@ return {
 
 		opts = {
 			options = {
-				theme = atom_one_light,
+				theme = kitty_default,
 				globalstatus = true,
 
 				disabled_filetypes = {
