@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! command -v tinty >/dev/null 2>&1; then
+	echo "tinty is not installed"
+	exit 1
+fi
+
+if [[ $# -gt 0 ]]; then
+	tinty apply "$1"
+	exit 0
+fi
+
+if ! command -v fzf >/dev/null 2>&1; then
+	echo "fzf is not installed"
+	exit 1
+fi
+
+scheme="$(
+	tinty list |
+		fzf \
+			--prompt="Theme > " \
+			--height=60% \
+			--border
+)"
+
+[[ -z "$scheme" ]] && exit 0
+
+tinty apply "$scheme"

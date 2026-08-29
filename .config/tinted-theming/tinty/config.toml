@@ -1,0 +1,45 @@
+shell = "zsh -c '{}'"
+
+default-scheme = "base16-gruvbox-dark-medium"
+default-cycle-ring = "daily"
+
+[[rings]]
+name = "daily"
+schemes = [
+  "base16-github",
+  "base16-gruvbox-dark-medium",
+  "base16-tokyo-night-dark",
+]
+
+[[items]]
+name = "ghostty"
+path = "https://github.com/tinted-theming/tinted-terminal"
+themes-dir = "themes/ghostty"
+supported-systems = ["base16", "base24"]
+
+hook = """
+mkdir -p ~/.config/ghostty/themes
+cp -f "$TINTY_THEME_FILE_PATH" ~/.config/ghostty/themes/tinted-theming
+killall -SIGUSR2 ghostty 2>/dev/null || true
+"""
+
+[[items]]
+name = "tmux"
+path = "https://github.com/tinted-theming/base16-tmux"
+themes-dir = "colors"
+supported-systems = ["base16", "base24"]
+
+hook = """
+tmux source-file "$TINTY_THEME_FILE_PATH" 2>/dev/null || true
+"""
+
+[[items]]
+name = "neovim"
+path = "https://github.com/tinted-theming/base16-vim"
+themes-dir = "colors"
+supported-systems = ["base16"]
+
+hook = """
+mkdir -p ~/.config/nvim/colors
+cp -f "$TINTY_THEME_FILE_PATH" ~/.config/nvim/colors/tinted.vim
+"""

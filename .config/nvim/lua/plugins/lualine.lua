@@ -1,41 +1,3 @@
-local kitty_default = {
-	normal = {
-		a = { fg = "#ffffff", bg = "#0d73cc", gui = "bold" },
-		b = { fg = "#dddddd", bg = "#222222" },
-		c = { fg = "#dddddd", bg = "#000000" },
-	},
-
-	insert = {
-		a = { fg = "#000000", bg = "#23d18b", gui = "bold" },
-		b = { fg = "#dddddd", bg = "#222222" },
-		c = { fg = "#dddddd", bg = "#000000" },
-	},
-
-	visual = {
-		a = { fg = "#ffffff", bg = "#7d57c2", gui = "bold" },
-		b = { fg = "#dddddd", bg = "#222222" },
-		c = { fg = "#dddddd", bg = "#000000" },
-	},
-
-	replace = {
-		a = { fg = "#ffffff", bg = "#f2201f", gui = "bold" },
-		b = { fg = "#dddddd", bg = "#222222" },
-		c = { fg = "#dddddd", bg = "#000000" },
-	},
-
-	command = {
-		a = { fg = "#000000", bg = "#e5e510", gui = "bold" },
-		b = { fg = "#dddddd", bg = "#222222" },
-		c = { fg = "#dddddd", bg = "#000000" },
-	},
-
-	inactive = {
-		a = { fg = "#767676", bg = "#000000" },
-		b = { fg = "#767676", bg = "#000000" },
-		c = { fg = "#767676", bg = "#000000" },
-	},
-}
-
 return {
 	{
 		"nvim-lualine/lualine.nvim",
@@ -44,7 +6,7 @@ return {
 
 		opts = {
 			options = {
-				theme = kitty_default,
+				theme = "auto",
 				globalstatus = true,
 
 				disabled_filetypes = {

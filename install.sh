@@ -35,8 +35,9 @@ install_packages() {
     fi
     info "Installing core packages via Homebrew..."
     brew install tmux neovim git ripgrep fd fzf make node python3
-    brew install --cask font-meslo-lg-nerd-font
 
+    brew install tinted-theming/tinted/tinty
+    
     info "Installing LSP servers + tools via Homebrew..."
     brew install typescript-language-server
     brew install vscode-langservers-extracted
@@ -73,40 +74,33 @@ install_tpm() {
 
 # ── Symlink dotfiles ──────────────────────────────────────────
 link_dotfiles() {
-  info "Symlinking dotfiles..."
-  symlink "$DOTFILES_DIR/.tmux.conf"   "$HOME/.tmux.conf"
-  symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+	info "Symlinking dotfiles..."
+
+	symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+	symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+
+	mkdir -p "$HOME/.config/ghostty"
+	symlink \
+		"$DOTFILES_DIR/.config/ghostty/config" \
+		"$HOME/.config/ghostty/config"
+
+	mkdir -p "$HOME/.config/tinted-theming"
+	symlink \
+		"$DOTFILES_DIR/.config/tinted-theming/tinty" \
+		"$HOME/.config/tinted-theming/tinty"
 }
 
-# ── Sora theme extras ─────────────────────────────────────────
-install_sora() {
-  info "Installing Sora theme extras..."
-  local sora_dir="$DOTFILES_DIR/extras/sora"
+setup_tinty() {
+	if ! command_exists tinty; then
+		warn "Tinty is not installed — skipping theme setup"
+		return
+	fi
 
-  # tmux — symlink so the source-file in .tmux.conf finds it
-  symlink "$sora_dir/sora.tmux.conf" "$HOME/sora.tmux.conf"
+	info "Syncing themes..."
+	tinty sync
 
-  # lazygit — merge sora theme into lazygit config
-  if command_exists lazygit || [[ "$OS" == "Darwin" ]]; then
-    local lg_config_dir="$HOME/Library/Application Support/lazygit"
-    [[ "$OS" != "Darwin" ]] && lg_config_dir="$HOME/.config/lazygit"
-    mkdir -p "$lg_config_dir"
-    local lg_config="$lg_config_dir/config.yml"
-    if [ ! -f "$lg_config" ]; then
-      cp "$sora_dir/sora-lazygit.yml" "$lg_config"
-      info "Lazygit sora theme installed"
-    else
-      warn "Lazygit config already exists — manually merge extras/sora/sora-lazygit.yml if needed"
-    fi
-  fi
-
-  # iTerm2 — open the .itermcolors file so iTerm imports it automatically
-  if [[ "$OS" == "Darwin" ]] && command_exists open; then
-    info "Importing Sora iTerm2 color scheme..."
-    open "$sora_dir/sora.itermcolors"
-    info "iTerm2 will open and import Sora — click OK, then set it in:"
-    info "  iTerm2 → Preferences → Profiles → Colors → Color Presets → Sora"
-  fi
+	info "Applying default theme..."
+	tinty apply base16-gruvbox-dark-medium
 }
 
 # ── Install tmux plugins ──────────────────────────────────────
@@ -117,18 +111,28 @@ install_tmux_plugins() {
 
 # ── Summary ───────────────────────────────────────────────────
 print_summary() {
-  echo ""
-  echo -e "${GREEN}✓ Done!${NC}"
-  echo ""
-  echo "Next steps:"
-  echo "  1. Start tmux: tmux"
-  echo "  2. Open nvim:  nvim  (Lazy auto-installs plugins on first launch)"
-  echo "  3. In nvim:    <leader>th to pick your theme"
-  echo ""
-  echo "Sora theme installed for: tmux, nvim, iTerm2, lazygit"
-  echo "iTerm2: Preferences → Profiles → Colors → Color Presets → Sora"
-  echo ""
-  echo "Font: Make sure your terminal is set to 'MesloLGS Nerd Font'"
+	echo ""
+	echo -e "${GREEN}✓ Done!${NC}"
+	echo ""
+
+	echo "Next steps:"
+	echo "  1. Start Ghostty"
+	echo "  2. Start tmux: tmux"
+	echo "  3. Open Neovim: nvim"
+	echo "  4. Pick a theme: theme"
+	echo ""
+
+	echo "Theme system:"
+	echo "  Tinty → Ghostty + tmux + Neovim + Lualine"
+	echo ""
+
+	echo "Default theme:"
+	echo "  base16-gruvbox-dark-medium"
+	echo ""
+
+	echo "Font:"
+	echo "  JetBrains Mono"
+	echo "" echo "Font: Make sure your terminal is set to 'MesloLGS Nerd Font'"
 }
 
 # ── Main ──────────────────────────────────────────────────────
@@ -136,8 +140,8 @@ main() {
   info "Starting dotfiles install (OS: $OS)"
   install_packages
   install_tpm
+  setup_tinty
   link_dotfiles
-  install_sora
   install_tmux_plugins
   print_summary
 }
