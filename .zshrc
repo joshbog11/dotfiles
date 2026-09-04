@@ -73,6 +73,7 @@ alias ga='git add .'
 alias gcm='git commit -m'
 alias gb='git branch'
 alias gd='git diff'
+alias gp='git push'
 alias gl='git log --graph --decorate --oneline --all'
 alias lg=lazygit
 alias ls='eza --group-directories-first --icons=auto'
