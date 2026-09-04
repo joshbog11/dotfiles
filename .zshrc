@@ -53,6 +53,10 @@ project() {
   [[ -n "$repo" ]] && cd "$repo"
 }
 
+# Oh My Zsh's Git plugin defines `gco` as an alias. Remove it before replacing
+# it with the interactive branch picker below.
+unalias gco 2>/dev/null
+
 # Pick a recent local/remote Git branch and switch to it.
 gco() {
   local branch
