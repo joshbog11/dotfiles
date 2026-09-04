@@ -22,7 +22,7 @@ Install **JetBrains Mono Nerd Font** separately, then restart Ghostty (or run `e
 |---|---|
 | Shell and prompt | Zsh, Starship, autosuggestions, syntax highlighting |
 | Navigation | zoxide, eza, fd, fzf |
-| Git | delta, lazygit, branch and project pickers |
+| Git | delta output and lazygit for the existing Neovim integration |
 | Environment | optional direnv hook |
 | Terminal/editor | Ghostty, tmux, Neovim |
 | Theme | Tinty with Base16 schemes |
@@ -31,7 +31,7 @@ Install **JetBrains Mono Nerd Font** separately, then restart Ghostty (or run `e
 
 ```text
 Tinty scheme
-├── Ghostty palette ──> Starship, fzf, eza, delta (ANSI colours)
+├── Ghostty palette ──> Starship, fzf, eza and delta (ANSI colours)
 ├── tmux palette      ──> ~/.config/tmux/tinted.conf
 └── Neovim palette    ──> colors/tinted.vim ──> Lualine auto theme
 ```
@@ -44,9 +44,6 @@ Tmux uses Tinty's full segmented status bar. The left segment shows the session,
 
 - `cd keyword` uses zoxide's learned directory history; `cdi` opens its picker.
 - `Alt-C` picks a directory and `Ctrl-T` inserts a selected file via fzf.
-- `project` finds Git repositories under `~/Developer`, `~/Projects`, `~/Code`, `~/work`, and `~/dotfiles`.
-- `gco` previews recent branches and switches to the selected branch.
-- `lg` opens lazygit; `git lg` shows a compact graph.
 - `ll` shows a detailed Git-aware directory listing.
 - Entering a directory with an approved `.envrc` loads it through direnv. Run `direnv allow` once per trusted project.
 
@@ -55,7 +52,7 @@ Tmux uses Tinty's full segmented status bar. The left segment shows the session,
 ```text
 .zshrc → ~/.config/zsh/dotfiles.zsh shared shell tools (local ~/.zshrc preserved)
 .config/starship.toml               two-line Git-aware prompt
-.config/git/dotfiles.inc            delta and shared Git defaults
+.config/git/delta.inc               delta display settings (included by Git; no aliases)
 .config/tinted-theming/tinty/       theme sources and hooks
 .config/ghostty/config              terminal settings
 .tmux.conf                           tmux and persisted Tinty palette
@@ -63,7 +60,7 @@ Tmux uses Tinty's full segmented status bar. The left segment shows the session,
 bin/theme                            theme picker/direct command
 ```
 
-Personal Git name/email remain in `~/.gitconfig`; the installer adds the repo-managed Git file as an include. This keeps machine-specific identity out of the repository.
+Delta improves ordinary `git diff`, `git show`, and `git log -p` output. The repo deliberately defines no Git shell aliases or picker functions, so aliases supplied by the machine's local Oh My Zsh configuration—such as `gco -b new-branch`—keep their normal behaviour.
 
 ## First-run checks
 
@@ -72,7 +69,6 @@ exec zsh
 theme
 tmux
 nvim
-git config --show-origin --get core.pager
 ```
 
 Inside tmux, use `Ctrl-Space I` if plugins were not installed by the bootstrap. Neovim's lazy.nvim installs its plugins on first launch. See [CHEATSHEET.md](CHEATSHEET.md) for everyday shortcuts.

@@ -104,7 +104,6 @@ link_dotfiles() {
 	symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 	symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
 	symlink "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
-	symlink "$DOTFILES_DIR/.config/git/dotfiles.inc" "$HOME/.config/git/dotfiles.inc"
 
 	mkdir -p "$HOME/.config/ghostty"
 	symlink \
@@ -118,10 +117,11 @@ link_dotfiles() {
 
 	configure_zsh
 
-	if ! git config --global --get-all include.path 2>/dev/null | grep -Fqx "$HOME/.config/git/dotfiles.inc"; then
-		git config --global --add include.path "$HOME/.config/git/dotfiles.inc"
-		info "Added shared Git configuration (existing identity preserved)"
+	if ! git config --global --get-all include.path 2>/dev/null | grep -Fqx "$DOTFILES_DIR/.config/git/delta.inc"; then
+		git config --global --add include.path "$DOTFILES_DIR/.config/git/delta.inc"
+		info "Enabled delta for Git output (no aliases added)"
 	fi
+
 }
 
 setup_tinty() {

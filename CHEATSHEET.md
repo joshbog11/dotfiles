@@ -9,11 +9,7 @@
 | `Alt-C` | Find and enter a directory with fzf |
 | `Ctrl-T` | Find a file and insert its path |
 | `Ctrl-R` | Fuzzy-search shell history |
-| `project` | Pick a Git project from common folders |
-| `gco` | Preview and switch Git branches |
 | `ll` | Detailed, Git-aware eza listing |
-| `lg` | Open lazygit |
-| `git lg` | Compact decorated commit graph |
 | `direnv allow` | Trust a project's `.envrc` |
 
 ## Themes

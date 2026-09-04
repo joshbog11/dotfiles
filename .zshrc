@@ -39,47 +39,15 @@ command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
-# Find a Git repository beneath common project roots and jump to it.
-project() {
-  local root repo
-  local -a roots
-  roots=("$HOME/Developer" "$HOME/Projects" "$HOME/Code" "$HOME/work" "$HOME/dotfiles")
-  root="$(printf '%s\n' "${roots[@]}" | while read -r dir; do [[ -d "$dir" ]] && print -r -- "$dir"; done)"
-  repo="$(printf '%s\n' "$root" | while read -r dir; do
-    [[ -n "$dir" ]] || continue
-    [[ -d "$dir/.git" ]] && print -r -- "$dir"
-    fd --hidden --type d --max-depth 4 '^\.git$' "$dir" 2>/dev/null | sed 's#/.git/$##; s#/.git$##'
-  done | sort -u | fzf --prompt='Project > ' --preview='eza --tree --level=2 --color=always {} 2>/dev/null | head -100')" || return
-  [[ -n "$repo" ]] && cd "$repo"
-}
-
-# Oh My Zsh's Git plugin defines `gco` as an alias. Remove it before replacing
-# it with the interactive branch picker below.
-unalias gco 2>/dev/null
-
-# Pick a recent local/remote Git branch and switch to it.
-gco() {
-  local branch
-  branch="$(git branch --all --format='%(refname:short)' --sort=-committerdate 2>/dev/null |
-    grep -v '/HEAD$' |
-    fzf --prompt='Branch > ' --preview='git log --color=always --oneline --decorate -20 {}')" || return
-  branch="${branch#origin/}"
-  [[ -n "$branch" ]] && git switch "$branch"
-}
+# Remove picker functions shipped by an earlier version. `unfunction` does not
+# touch Oh My Zsh aliases such as gco='git checkout'.
+unfunction gco project 2>/dev/null
 
 alias python=python3
 alias pip=pip3
 alias nv=nvim
 alias zrc='nvim ~/.zshrc'
 alias src='source ~/.zshrc'
-alias gs='git status --short --branch'
-alias ga='git add .'
-alias gcm='git commit -m'
-alias gb='git branch'
-alias gd='git diff'
-alias gp='git push'
-alias gl='git log --graph --decorate --oneline --all'
-alias lg=lazygit
 alias ls='eza --group-directories-first --icons=auto'
 alias ll='eza --long --all --git --group-directories-first --icons=auto'
 alias tree='eza --tree --icons=auto'
