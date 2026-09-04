@@ -1,8 +1,8 @@
 " vi:syntax=vim
 
 " tinted-vim (https://github.com/tinted-theming/tinted-vim)
-" Scheme name: Gruvbox dark, medium
-" Scheme author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+" Scheme name: Ayu Mirage
+" Scheme author: Tinted Theming (https://github.com/tinted-theming), Ayu Theme (https://github.com/ayu-theme)
 " Template author: Tinted Theming (https://github.com/tinted-theming)
 
 " This enables the coresponding base16-shell script to run so that
@@ -11,35 +11,35 @@
 "   let g:tinted_shell_path=path/to/shell/scripts
 if !has('gui_running')
   if exists('g:tinted_shell_path')
-    execute 'silent !/bin/sh '.g:tinted_shell_path.'/base16/gruvbox-dark-medium.sh'
+    execute 'silent !/bin/sh '.g:tinted_shell_path.'/base16/ayu-mirage.sh'
   endif
 endif
 
 " GUI colors
-let s:gui00        = '282828'
-let s:gui01        = '3c3836'
-let s:gui02        = '504945'
-let s:gui03        = '665c54'
-let s:gui04        = 'bdae93'
-let s:gui05        = 'd5c4a1'
-let s:gui06        = 'ebdbb2'
-let s:gui07        = 'fbf1c7'
-let s:gui08        = 'fb4934'
-let s:gui09        = 'fe8019'
-let s:gui0A        = 'fabd2f'
-let s:gui0B        = 'b8bb26'
-let s:gui0C        = '8ec07c'
-let s:gui0D        = '83a598'
-let s:gui0E        = 'd3869b'
-let s:gui0F        = 'd65d0e'
-let s:gui10        = '282828'
-let s:gui11        = '282828'
-let s:gui12        = 'fb4934'
-let s:gui13        = 'fabd2f'
-let s:gui14        = 'b8bb26'
-let s:gui15        = '8ec07c'
-let s:gui16        = '83a598'
-let s:gui17        = 'd3869b'
+let s:gui00        = '1f2430'
+let s:gui01        = '242936'
+let s:gui02        = '323844'
+let s:gui03        = '4a5059'
+let s:gui04        = '707a8c'
+let s:gui05        = 'cccac2'
+let s:gui06        = 'd9d7ce'
+let s:gui07        = 'f3f4f5'
+let s:gui08        = 'f28779'
+let s:gui09        = 'ffad66'
+let s:gui0A        = 'ffd173'
+let s:gui0B        = 'd5ff80'
+let s:gui0C        = '95e6cb'
+let s:gui0D        = '73d0ff'
+let s:gui0E        = 'd4bfff'
+let s:gui0F        = 'f27983'
+let s:gui10        = '1f2430'
+let s:gui11        = '1f2430'
+let s:gui12        = 'f28779'
+let s:gui13        = 'ffd173'
+let s:gui14        = 'd5ff80'
+let s:gui15        = '95e6cb'
+let s:gui16        = '73d0ff'
+let s:gui17        = 'd4bfff'
 
 " Terminal colors
 let s:cterm00  = '00'
@@ -95,22 +95,22 @@ call s:create_color_globals()
 
 " Integrated Terminal colors
 let s:colors = [
-  \ '#282828',
-  \ '#fb4934',
-  \ '#b8bb26',
-  \ '#fabd2f',
-  \ '#83a598',
-  \ '#d3869b',
-  \ '#8ec07c',
-  \ '#d5c4a1',
-  \ '#665c54',
-  \ '#fb4934',
-  \ '#b8bb26',
-  \ '#fabd2f',
-  \ '#83a598',
-  \ '#d3869b',
-  \ '#8ec07c',
-  \ '#fbf1c7'
+  \ '#1f2430',
+  \ '#f28779',
+  \ '#d5ff80',
+  \ '#ffd173',
+  \ '#73d0ff',
+  \ '#d4bfff',
+  \ '#95e6cb',
+  \ '#cccac2',
+  \ '#4a5059',
+  \ '#f28779',
+  \ '#d5ff80',
+  \ '#ffd173',
+  \ '#73d0ff',
+  \ '#d4bfff',
+  \ '#95e6cb',
+  \ '#f3f4f5'
 \]
 
 if has('nvim')
@@ -160,7 +160,7 @@ let s:attrs = {
       \}
 
 " Theme setup
-let g:colors_name = 'base16-gruvbox-dark-medium'
+let g:colors_name = 'base16-ayu-mirage'
 
 " Highlighting function
 " Optional variables are attributes and guisp

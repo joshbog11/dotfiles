@@ -26,6 +26,31 @@ symlink() {
   info "Linked $dst → $src"
 }
 
+configure_zsh() {
+  local zshrc="$HOME/.zshrc"
+  local shared="$HOME/.config/zsh/dotfiles.zsh"
+  local source_line='[[ -r "$HOME/.config/zsh/dotfiles.zsh" ]] && source "$HOME/.config/zsh/dotfiles.zsh"'
+
+  # Migrate the earlier installer, which briefly linked the whole ~/.zshrc.
+  if [ -L "$zshrc" ] && [ "$(readlink "$zshrc")" = "$DOTFILES_DIR/.zshrc" ]; then
+    rm "$zshrc"
+    if [ -f "$zshrc.bak" ]; then
+      mv "$zshrc.bak" "$zshrc"
+    else
+      : > "$zshrc"
+    fi
+    info "Restored machine-local $zshrc"
+  fi
+
+  [ -e "$zshrc" ] || : > "$zshrc"
+  if ! grep -Fqx "$source_line" "$zshrc"; then
+    printf '\n# Shared shell tools from ~/dotfiles (machine settings stay local).\n%s\n' "$source_line" >> "$zshrc"
+    info "Enabled shared shell tools in $zshrc"
+  fi
+
+  symlink "$DOTFILES_DIR/.zshrc" "$shared"
+}
+
 # ── Package manager install ───────────────────────────────────
 install_packages() {
   if [[ "$OS" == "Darwin" ]]; then
@@ -77,7 +102,6 @@ link_dotfiles() {
 	info "Symlinking dotfiles..."
 
 	symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-	symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 	symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
 	symlink "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 	symlink "$DOTFILES_DIR/.config/git/dotfiles.inc" "$HOME/.config/git/dotfiles.inc"
@@ -91,6 +115,8 @@ link_dotfiles() {
 	symlink \
 		"$DOTFILES_DIR/.config/tinted-theming/tinty" \
 		"$HOME/.config/tinted-theming/tinty"
+
+	configure_zsh
 
 	if ! git config --global --get-all include.path 2>/dev/null | grep -Fqx "$HOME/.config/git/dotfiles.inc"; then
 		git config --global --add include.path "$HOME/.config/git/dotfiles.inc"

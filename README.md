@@ -10,7 +10,9 @@ cd ~/dotfiles
 ./install.sh
 ```
 
-The installer is safe to rerun. It installs Homebrew if needed, installs dependencies, backs up real files before linking repo versions, preserves the Git identity in the existing `~/.gitconfig`, installs tmux plugins, syncs Tinty, and applies the default theme.
+The installer is safe to rerun. It installs Homebrew if needed, installs dependencies, preserves the machine-local `~/.zshrc` and Git identity, installs tmux plugins, syncs Tinty, and applies the default theme.
+
+The repository never owns or symlinks `~/.zshrc`. It links the shared shell module at `~/.config/zsh/dotfiles.zsh` and adds one guarded source line to the local file. Pulling a new version therefore cannot replace machine-specific settings. The installer also migrates the earlier setup that linked `~/.zshrc`, restoring `~/.zshrc.bak` when present.
 
 Install **JetBrains Mono Nerd Font** separately, then restart Ghostty (or run `exec zsh`). Linux package-manager support is best-effort; macOS/Homebrew is the reproducible target.
 
@@ -51,7 +53,7 @@ Tmux uses Tinty's full segmented status bar. The left segment shows the session,
 ## Layout
 
 ```text
-.zshrc                              shell, history, completion and pickers
+.zshrc → ~/.config/zsh/dotfiles.zsh shared shell tools (local ~/.zshrc preserved)
 .config/starship.toml               two-line Git-aware prompt
 .config/git/dotfiles.inc            delta and shared Git defaults
 .config/tinted-theming/tinty/       theme sources and hooks
