@@ -1,142 +1,76 @@
 # dotfiles
 
-> tmux + neovim config. One command to reproduce the same environment on any machine.
+A reproducible macOS terminal environment built around Ghostty, Zsh, tmux and Neovim. Tinty/Base16 is the single colour source for Ghostty, tmux and Neovim; shell tools use the terminal's ANSI palette so they follow automatically.
 
-Based on the [Dreams of Code tmux setup](https://www.youtube.com/watch?v=DzNmUNvnB04).
-
----
-
-## Requirements
-
-| Tool | Version |
-|------|---------|
-| tmux | ≥ 3.2 |
-| neovim | ≥ 0.9 |
-| git | any |
-| A Nerd Font | e.g. MesloLGS NF |
-| ripgrep + fd | for Telescope |
-| node + python3 | for LSP servers |
-
----
-
-## Quick start
+## Quick start (macOS)
 
 ```bash
 git clone https://github.com/<your-username>/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-chmod +x install.sh
 ./install.sh
 ```
 
-The script will:
-1. Install packages (Homebrew on macOS, apt/dnf/pacman on Linux)
-2. Install [TPM](https://github.com/tmux-plugins/tpm) (tmux plugin manager)
-3. Symlink `.tmux.conf` → `~/.tmux.conf`
-4. Symlink `.config/nvim` → `~/.config/nvim`
-5. Install tmux plugins headlessly
+The installer is safe to rerun. It installs Homebrew if needed, installs dependencies, backs up real files before linking repo versions, preserves the Git identity in the existing `~/.gitconfig`, installs tmux plugins, syncs Tinty, and applies the default theme.
 
-Then:
-- Open tmux and press **`C-Space I`** to install plugins (if headless install didn't run)
-- Open `nvim` — [lazy.nvim](https://github.com/folke/lazy.nvim) will auto-install everything
+Install **JetBrains Mono Nerd Font** separately, then restart Ghostty (or run `exec zsh`). Linux package-manager support is best-effort; macOS/Homebrew is the reproducible target.
 
----
+## Included
 
-## tmux
+| Area | Tools |
+|---|---|
+| Shell and prompt | Zsh, Starship, autosuggestions, syntax highlighting |
+| Navigation | zoxide, eza, fd, fzf |
+| Git | delta, lazygit, branch and project pickers |
+| Environment | optional direnv hook |
+| Terminal/editor | Ghostty, tmux, Neovim |
+| Theme | Tinty with Base16 schemes |
 
-### Prefix
-`Ctrl + Space` (replaces the default `Ctrl + b`)
+## Theme architecture
 
-### Pane navigation
-| Key | Action |
-|-----|--------|
-| `prefix h/j/k/l` | Move between panes (vim style) |
-| `Alt + ←/→/↑/↓` | Move between panes (no prefix) |
-| `prefix "` | Split horizontal (keeps cwd) |
-| `prefix %` | Split vertical (keeps cwd) |
-
-### Window navigation
-| Key | Action |
-|-----|--------|
-| `Shift + ←/→` | Prev/next window |
-| `Alt + H/L` | Prev/next window (vim style) |
-
-### Copy mode (vi)
-| Key | Action |
-|-----|--------|
-| `prefix [` | Enter copy mode |
-| `v` | Begin selection |
-| `C-v` | Rectangle selection |
-| `y` | Yank (copy to system clipboard via tmux-yank) |
-
-### Plugins
-| Plugin | Purpose |
-|--------|---------|
-| [tpm](https://github.com/tmux-plugins/tpm) | Plugin manager |
-| [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) | Sensible defaults |
-| [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless nvim ↔ tmux pane nav |
-| [catppuccin-tmux](https://github.com/dreamsofcode-io/catppuccin-tmux) | Mocha theme |
-| [tmux-yank](https://github.com/tmux-plugins/tmux-yank) | System clipboard yank |
-
----
-
-## neovim
-
-**Leader key:** `Space`
-
-### File navigation
-| Key | Action |
-|-----|--------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>fb` | Buffers |
-| `<leader>fr` | Recent files |
-| `<leader>e` | Toggle file explorer (Neo-tree) |
-
-### LSP
-| Key | Action |
-|-----|--------|
-| `gd` | Go to definition |
-| `gr` | References |
-| `K` | Hover docs |
-| `<leader>ca` | Code action |
-| `<leader>rn` | Rename symbol |
-| `<leader>f` | Format file |
-
-### Git
-| Key | Action |
-|-----|--------|
-| `]h / [h` | Next/prev git hunk |
-| `<leader>hs` | Stage hunk |
-| `<leader>hp` | Preview hunk |
-| `<leader>hb` | Blame line |
-
-### Plugins
-| Plugin | Purpose |
-|--------|---------|
-| [catppuccin/nvim](https://github.com/catppuccin/nvim) | Mocha theme (matches tmux) |
-| [lazy.nvim](https://github.com/folke/lazy.nvim) | Plugin manager |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Syntax / indentation |
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder |
-| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) + mason | LSP |
-| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) + luasnip | Completion |
-| [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | File explorer |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Statusline |
-| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git decorations |
-| [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless tmux nav |
-| [which-key.nvim](https://github.com/folke/which-key.nvim) | Keymap hints |
-| [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) | Indent guides |
-| [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Auto bracket pairs |
-| [Comment.nvim](https://github.com/numToStr/Comment.nvim) | `gcc` to comment |
-| [nvim-surround](https://github.com/kylechui/nvim-surround) | Surround motions |
-| [todo-comments.nvim](https://github.com/folke/todo-comments.nvim) | TODO highlights |
-
----
-
-## Syncing to a new machine
-
-```bash
-git clone https://github.com/<your-username>/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./install.sh
+```text
+Tinty scheme
+├── Ghostty palette ──> Starship, fzf, eza, delta (ANSI colours)
+├── tmux palette      ──> ~/.config/tmux/tinted.conf
+└── Neovim palette    ──> colors/tinted.vim ──> Lualine auto theme
 ```
 
-That's it.
+Use `theme` for an fzf picker, `theme base16-gruvbox-dark-medium` to apply one directly, or `tinty current` to inspect the active scheme. The active tmux palette is persisted, so a new tmux server receives it too.
+
+Tmux uses Tinty's full segmented status bar. The left segment shows the session, windows are visually separated with a bright active window, and the right side shows date, time, and host. Shell windows automatically use their current folder as the name; foreground applications use their command name.
+
+## Shell workflow
+
+- `cd keyword` uses zoxide's learned directory history; `cdi` opens its picker.
+- `Alt-C` picks a directory and `Ctrl-T` inserts a selected file via fzf.
+- `project` finds Git repositories under `~/Developer`, `~/Projects`, `~/Code`, `~/work`, and `~/dotfiles`.
+- `gco` previews recent branches and switches to the selected branch.
+- `lg` opens lazygit; `git lg` shows a compact graph.
+- `ll` shows a detailed Git-aware directory listing.
+- Entering a directory with an approved `.envrc` loads it through direnv. Run `direnv allow` once per trusted project.
+
+## Layout
+
+```text
+.zshrc                              shell, history, completion and pickers
+.config/starship.toml               two-line Git-aware prompt
+.config/git/dotfiles.inc            delta and shared Git defaults
+.config/tinted-theming/tinty/       theme sources and hooks
+.config/ghostty/config              terminal settings
+.tmux.conf                           tmux and persisted Tinty palette
+.config/nvim/                        Neovim
+bin/theme                            theme picker/direct command
+```
+
+Personal Git name/email remain in `~/.gitconfig`; the installer adds the repo-managed Git file as an include. This keeps machine-specific identity out of the repository.
+
+## First-run checks
+
+```bash
+exec zsh
+theme
+tmux
+nvim
+git config --show-origin --get core.pager
+```
+
+Inside tmux, use `Ctrl-Space I` if plugins were not installed by the bootstrap. Neovim's lazy.nvim installs its plugins on first launch. See [CHEATSHEET.md](CHEATSHEET.md) for everyday shortcuts.

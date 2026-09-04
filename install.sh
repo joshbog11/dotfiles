@@ -34,7 +34,9 @@ install_packages() {
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     info "Installing core packages via Homebrew..."
-    brew install tmux neovim git ripgrep fd fzf make node python3
+    brew install tmux neovim git ripgrep fd fzf make node python3 \
+      starship zoxide eza git-delta direnv lazygit \
+      zsh-autosuggestions zsh-syntax-highlighting
 
     brew install tinted-theming/tinted/tinty
     
@@ -45,8 +47,6 @@ install_packages() {
     brew install pyright
     brew install biome
     brew install stylua
-    brew install lazygit
-
   elif command_exists apt-get; then
     info "Installing packages via apt..."
     sudo apt-get update -qq
@@ -77,7 +77,10 @@ link_dotfiles() {
 	info "Symlinking dotfiles..."
 
 	symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+	symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 	symlink "$DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+	symlink "$DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
+	symlink "$DOTFILES_DIR/.config/git/dotfiles.inc" "$HOME/.config/git/dotfiles.inc"
 
 	mkdir -p "$HOME/.config/ghostty"
 	symlink \
@@ -88,6 +91,11 @@ link_dotfiles() {
 	symlink \
 		"$DOTFILES_DIR/.config/tinted-theming/tinty" \
 		"$HOME/.config/tinted-theming/tinty"
+
+	if ! git config --global --get-all include.path 2>/dev/null | grep -Fqx "$HOME/.config/git/dotfiles.inc"; then
+		git config --global --add include.path "$HOME/.config/git/dotfiles.inc"
+		info "Added shared Git configuration (existing identity preserved)"
+	fi
 }
 
 setup_tinty() {
@@ -116,7 +124,7 @@ print_summary() {
 	echo ""
 
 	echo "Next steps:"
-	echo "  1. Start Ghostty"
+	echo "  1. Restart Ghostty (or run: exec zsh)"
 	echo "  2. Start tmux: tmux"
 	echo "  3. Open Neovim: nvim"
 	echo "  4. Pick a theme: theme"
@@ -130,9 +138,7 @@ print_summary() {
 	echo "  base16-gruvbox-dark-medium"
 	echo ""
 
-	echo "Font:"
-	echo "  JetBrains Mono"
-	echo "" echo "Font: Make sure your terminal is set to 'MesloLGS Nerd Font'"
+	echo "Font: JetBrains Mono Nerd Font (install it separately if needed)"
 }
 
 # ── Main ──────────────────────────────────────────────────────
@@ -140,8 +146,8 @@ main() {
   info "Starting dotfiles install (OS: $OS)"
   install_packages
   install_tpm
-  setup_tinty
   link_dotfiles
+  setup_tinty
   install_tmux_plugins
   print_summary
 }

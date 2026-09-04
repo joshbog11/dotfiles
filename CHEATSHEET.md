@@ -1,5 +1,30 @@
 # Cheatsheet
 
+## Shell and projects
+
+| Command / key | Action |
+|---|---|
+| `cd <hint>` | Jump with zoxide (ordinary paths still work) |
+| `cdi` | Interactive zoxide directory picker |
+| `Alt-C` | Find and enter a directory with fzf |
+| `Ctrl-T` | Find a file and insert its path |
+| `Ctrl-R` | Fuzzy-search shell history |
+| `project` | Pick a Git project from common folders |
+| `gco` | Preview and switch Git branches |
+| `ll` | Detailed, Git-aware eza listing |
+| `lg` | Open lazygit |
+| `git lg` | Compact decorated commit graph |
+| `direnv allow` | Trust a project's `.envrc` |
+
+## Themes
+
+| Command | Action |
+|---|---|
+| `theme` | Pick and apply a Tinty scheme |
+| `theme <scheme>` | Apply a scheme by name |
+| `tinty current` | Show the active scheme |
+| `tinty sync` | Refresh schemes/templates |
+
 ## Tmux
 > Prefix: `Ctrl + Space` (press and release, then the next key)
 
@@ -15,6 +40,8 @@
 | `Alt + L` | Next window |
 | `Alt + H` | Previous window |
 | `C-Space 1-9` | Jump to window by number |
+
+Shell windows are automatically named after their current folder. A manual rename with `C-Space ,` overrides the automatic name for that window.
 
 ### Panes
 | Key | Action |
@@ -116,7 +143,7 @@
 ### Misc
 | Key | Action |
 |-----|--------|
-| `<leader>th` | Theme picker |
+| `theme` (shell) | Theme picker for the whole environment |
 | `<leader>u` | Undotree |
 | `<leader>w` | Save |
 | `<leader>q` | Quit |
