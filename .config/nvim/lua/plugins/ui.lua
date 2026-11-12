@@ -29,7 +29,9 @@ return {
 
       return {
         options = {
-          theme = "auto", -- follows the active Tinty scheme
+          -- Provided by tinted-nvim; follows the active Tinty scheme. ("auto" would
+          -- pick lualine's own base16 theme, which needs a plugin we don't use.)
+          theme = "tinted",
           globalstatus = true,
           section_separators = "",
           component_separators = "│",
