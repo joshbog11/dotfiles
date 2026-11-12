@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Jump to a project: pick a folder, land in a tmux session named after it.
+# Inside tmux: prefix then f. From a plain shell: `sessionizer [dir]`.
+# In Rex, use Cmd-K (sessions) and Cmd-Shift-G (go to directory) instead.
+set -euo pipefail
+
+if [[ $# -gt 0 ]]; then
+  dir="$1"
+else
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "sessionizer: fzf is not installed" >&2
+    exit 1
+  fi
+  if command -v zoxide >/dev/null 2>&1; then
+    # Folders you actually visit, most used first.
+    dir="$(zoxide query --list | fzf --prompt="Project > " --height=100% --border || true)"
+  else
+    dir="$(find "$HOME" -mindepth 1 -maxdepth 3 -type d -not -path '*/.*' 2>/dev/null |
+      fzf --prompt="Project > " --height=100% --border || true)"
+  fi
+fi
+
+[[ -z "${dir:-}" ]] && exit 0
+[[ -d "$dir" ]] || { echo "sessionizer: not a directory: $dir" >&2; exit 1; }
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "sessionizer: tmux is not installed" >&2
+  exit 1
+fi
+
+name="$(basename "$dir" | tr '.: ' '___')"
+
+if ! tmux has-session -t "=$name" 2>/dev/null; then
+  tmux new-session -d -s "$name" -c "$dir"
+fi
+
+if [[ -n "${TMUX:-}" ]]; then
+  tmux switch-client -t "=$name"
+else
+  tmux attach-session -t "=$name"
+fi

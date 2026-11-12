@@ -1,25 +1,39 @@
--- ============================================================
--- lazy.lua — bootstrap lazy.nvim plugin manager
--- ============================================================
+-- Plugin manager: lazy.nvim. Installs itself on first launch.
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system({
+if not vim.uv.fs_stat(lazypath) then
+  local out = vim.fn.system({
     "git",
     "clone",
     "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
+    "https://github.com/folke/lazy.nvim.git",
     lazypath,
   })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Could not install lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nCheck your network / proxy and start Neovim again.\n" },
+    }, true, {})
+    return
+  end
 end
 
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  spec = {
-    { import = "plugins" },
-  },
+  spec = { { import = "plugins" } },
+  defaults = { lazy = true },
+  install = { colorscheme = { "habamax" } },
+  checker = { enabled = false }, -- update on your terms with :Lazy sync
   change_detection = { notify = false },
+  rocks = { enabled = false },
+  ui = { border = "rounded" },
+  performance = {
+    rtp = {
+      disabled_plugins = { "gzip", "netrwPlugin", "tarPlugin", "tohtml", "tutor", "zipPlugin" },
+    },
+  },
 })

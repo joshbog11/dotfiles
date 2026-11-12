@@ -1,105 +1,81 @@
--- Git tooling — lazygit + diffview + gitsigns
+-- Git inside the editor.
+--
+--   <leader>gg   LazyGit (full TUI: stage, commit, push, branches). `q` returns to the code.
+--   <leader>gd   side-by-side diff of everything changed    <leader>gf  history of this file
+--   ]h / [h      next / previous change      <leader>gh…  act on the change under the cursor
+-- (LazyGit and the git pickers are defined in snacks.lua.)
+
+local function toggle_diffview()
+  if require("diffview.lib").get_current_view() then
+    vim.cmd("DiffviewClose")
+  else
+    vim.cmd("DiffviewOpen")
+  end
+end
+
 return {
-
-  -- ── LazyGit — full git TUI in a floating window ──────────────
-  {
-    "kdheepak/lazygit.nvim",
-    lazy = true,
-    cmd  = "LazyGit",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    keys = {
-      { "<leader>gg", "<cmd>LazyGit<CR>", desc = "LazyGit" },
-    },
-    config = function()
-      vim.g.lazygit_floating_window_winblend = 0
-      vim.g.lazygit_floating_window_scaling_factor = 0.9
-      vim.g.lazygit_floating_window_border_chars = { "╭","─","╮","│","╯","─","╰","│" }
-      vim.g.lazygit_use_neovim_remote = 0
-    end,
-  },
-
-  -- ── Diffview — side-by-side diffs + file history ─────────────
-  {
-    "sindrets/diffview.nvim",
-    lazy = true,
-    cmd  = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    keys = {
-      { "<leader>gd", "<cmd>DiffviewOpen<CR>",              desc = "Diff working tree" },
-      { "<leader>gD", "<cmd>DiffviewClose<CR>",             desc = "Close diffview" },
-      { "<leader>gh", "<cmd>DiffviewFileHistory %<CR>",     desc = "File history (current)" },
-      { "<leader>gH", "<cmd>DiffviewFileHistory<CR>",       desc = "File history (repo)" },
-    },
-    opts = {
-      enhanced_diff_hl = true,
-      view = {
-        default = {
-          layout = "diff2_horizontal",
-        },
-        merge_tool = {
-          layout = "diff3_horizontal",
-          disable_diagnostics = true,
-        },
-      },
-      file_panel = {
-        listing_style = "tree",
-        win_config    = { width = 35 },
-      },
-    },
-  },
-
-  -- ── Gitsigns — gutter indicators + hunk/blame keymaps ────────
+  -- Change markers in the gutter, inline blame, stage / reset individual hunks.
   {
     "lewis6991/gitsigns.nvim",
-    event = { "BufReadPost", "BufNewFile" },
-    opts  = {
-      signs = {
-        add          = { text = "▎" },
-        change       = { text = "▎" },
-        delete       = { text = "" },
-        topdelete    = { text = "" },
-        changedelete = { text = "▎" },
-        untracked    = { text = "▎" },
-      },
-      current_line_blame = true,  -- always show blame inline
-      current_line_blame_opts = {
-        virt_text         = true,
-        virt_text_pos     = "eol",
-        delay             = 500,
-        ignore_whitespace = false,
-      },
-      on_attach = function(bufnr)
-        local gs  = package.loaded.gitsigns
-        local map = function(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      current_line_blame = true,
+      current_line_blame_opts = { delay = 400, virt_text_pos = "eol" },
+      current_line_blame_formatter = "<author>, <author_time:%R> · <summary>",
+      on_attach = function(buf)
+        local gs = require("gitsigns")
+
+        local function map(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc })
         end
 
-        -- Navigation
-        map("n", "]h", gs.next_hunk, "Next hunk")
-        map("n", "[h", gs.prev_hunk, "Prev hunk")
+        -- Jump between changes (falls back to the built-in keys in diff mode).
+        map("n", "]h", function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            gs.nav_hunk("next")
+          end
+        end, "Next change")
+        map("n", "[h", function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            gs.nav_hunk("prev")
+          end
+        end, "Previous change")
 
-        -- Staging
-        map("n", "<leader>hs", gs.stage_hunk,    "Stage hunk")
-        map("n", "<leader>hS", gs.stage_buffer,  "Stage buffer")
-        map("n", "<leader>hu", gs.undo_stage_hunk, "Undo stage hunk")
-        map("v", "<leader>hs",
-          function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end,
-          "Stage selected lines")
+        map("n", "<leader>ghs", gs.stage_hunk, "Stage / unstage change")
+        map("n", "<leader>ghr", gs.reset_hunk, "Discard change")
+        map("x", "<leader>ghs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Stage selection")
+        map("x", "<leader>ghr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Discard selection")
+        map("n", "<leader>ghS", gs.stage_buffer, "Stage whole file")
+        map("n", "<leader>ghR", gs.reset_buffer, "Discard all changes in file")
+        map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview change")
+        map("n", "<leader>ghb", function() gs.blame_line({ full = true }) end, "Blame line (full)")
+        map("n", "<leader>ghB", gs.blame, "Blame whole file")
+        map("n", "<leader>ghd", gs.diffthis, "Diff file against index")
+        map("n", "<leader>ug", gs.toggle_current_line_blame, "Toggle inline blame")
 
-        -- Reset
-        map("n", "<leader>hr", gs.reset_hunk,   "Reset hunk")
-        map("n", "<leader>hR", gs.reset_buffer, "Reset buffer")
-
-        -- Inspect
-        map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
-        map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame line (full)")
-        map("n", "<leader>hB", gs.toggle_current_line_blame, "Toggle inline blame")
-        map("n", "<leader>hd", gs.diffthis,     "Diff this")
-        map("n", "<leader>hD", function() gs.diffthis("~") end, "Diff against last commit")
-
-        -- Text object — select hunk with ih
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "Select hunk")
+        -- Text object: `vih` selects the change, `dih` deletes it.
+        map({ "o", "x" }, "ih", gs.select_hunk, "Change (hunk)")
       end,
+    },
+  },
+
+  -- Review changes and history in a dedicated tab.
+  {
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+    opts = {
+      enhanced_diff_hl = true,
+      view = { merge_tool = { layout = "diff3_mixed" } },
+    },
+    keys = {
+      { "<leader>gd", toggle_diffview, desc = "Diff view (toggle)" },
+      { "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "History of this file" },
+      { "<leader>gF", "<cmd>DiffviewFileHistory<cr>", desc = "History of the repository" },
+      { "<leader>gf", ":DiffviewFileHistory<cr>", mode = "x", desc = "History of selected lines" },
     },
   },
 }

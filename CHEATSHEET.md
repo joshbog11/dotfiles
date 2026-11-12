@@ -1,162 +1,194 @@
 # Cheatsheet
 
-## Shell and projects
+Forgot a key? In Neovim press `Space` and wait, or `Space s k` to search every keymap.
 
-| Command / key | Action |
+## The ten that matter most
+
+| Key | Action |
 |---|---|
-| `cd <hint>` | Jump with zoxide (ordinary paths still work) |
-| `cdi` | Interactive zoxide directory picker |
-| `Alt-C` | Find and enter a directory with fzf |
-| `Ctrl-T` | Find a file and insert its path |
-| `Ctrl-R` | Fuzzy-search shell history |
-| `ll` | Detailed, Git-aware eza listing |
-| `direnv allow` | Trust a project's `.envrc` |
-
-## Themes
-
-| Command | Action |
-|---|---|
-| `theme` | Pick and apply a Tinty scheme |
-| `theme <scheme>` | Apply a scheme by name |
-| `tinty current` | Show the active scheme |
-| `tinty sync` | Refresh schemes/templates |
-
-## Tmux
-> Prefix: `Ctrl + Space` (press and release, then the next key)
-
-### Sessions & Windows
-| Key | Action |
-|-----|--------|
-| `C-Space c` | New window |
-| `C-Space ,` | Rename window |
-| `C-Space s` | List / switch sessions |
-| `C-Space $` | Rename session |
-| `Shift + →` | Next window |
-| `Shift + ←` | Previous window |
-| `Alt + L` | Next window |
-| `Alt + H` | Previous window |
-| `C-Space 1-9` | Jump to window by number |
-
-Shell windows are automatically named after their current folder. A manual rename with `C-Space ,` overrides the automatic name for that window.
-
-### Panes
-| Key | Action |
-|-----|--------|
-| `C-Space %` | Split vertical |
-| `C-Space "` | Split horizontal |
-| `C-Space x` | Close pane |
-| `C-Space h/j/k/l` | Move between panes |
-| `Alt + ←/→/↑/↓` | Move between panes (no prefix) |
-
-### Copy Mode
-| Key | Action |
-|-----|--------|
-| `C-Space [` | Enter copy mode |
-| `v` | Begin selection |
-| `C-v` | Rectangle selection |
-| `y` | Yank (copy to clipboard) |
-| `q` | Exit copy mode |
+| `Space Space` | Find a file |
+| `Space /` | Search text in the project |
+| `Space e` | File explorer |
+| `Tab` / `Shift-Tab` | Next / previous open file |
+| `Space x` | Close the current file |
+| `gd` / `gr` | Go to definition / references |
+| `K` | Docs for the thing under the cursor |
+| `Space c a` | Code action (quick fix, import, refactor) |
+| `Space g g` | LazyGit |
+| `Ctrl-h/j/k/l` | Move between splits and panes (Neovim, Rex, tmux) |
 
 ---
 
 ## Neovim
-> Leader key: `Space`
 
-### Files
-| Key | Action |
-|-----|--------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep (search in project) |
-| `<leader>fb` | Open buffers |
-| `<leader>fr` | Recent files |
-| `<leader>fc` | Find word under cursor |
-| `<leader>e` | Open file explorer |
-| `<leader>E` | Close file explorer |
-| `Tab` | Next open file |
-| `Shift + Tab` | Previous open file |
-| `<leader>x` | Close current file |
+Leader is `Space`. `Ctrl-s` or `Space w` saves. `Space q q` quits.
 
-### Splits
-| Key | Action |
-|-----|--------|
-| `<C-w>v` | Vertical split |
-| `<C-w>s` | Horizontal split |
-| `<C-w>q` | Close split |
-| `<C-h/j/k/l>` | Move between splits |
+### Find and search
 
-### LSP
 | Key | Action |
-|-----|--------|
-| `gd` | Go to definition |
-| `gD` | Go to declaration |
+|---|---|
+| `Space Space` | Files (smart: open, recent, project) |
+| `Space f f` | Files |
+| `Space f r` | Recent files |
+| `Space ,` | Open files (buffers) |
+| `Space /` or `Space f g` | Grep the project |
+| `Space s w` | Grep the word under the cursor / selection |
+| `Space s b` | Lines in this file |
+| `Space s r` | Search and replace across the project |
+| `Space s s` / `Space s S` | Symbols in file / project |
+| `Space s d` | Diagnostics |
+| `Space s t` | TODO comments |
+| `Space s h` / `Space s k` | Help / keymaps |
+| `Space s .` | Reopen the last picker |
+| `/text` then `n` / `N` | Search in the file, next / previous |
+| `s` + 2 chars + label | Jump anywhere on screen (flash) |
+
+Inside a picker: type to filter, `Enter` opens, `Ctrl-v` / `Ctrl-s` open in a split, `Esc` closes.
+
+### Files and windows
+
+| Key | Action |
+|---|---|
+| `Space e` / `Space E` | Explorer: open or focus / close |
+| in explorer | `a` add, `r` rename, `d` delete, `m` move, `y` copy, `H` hidden files, `?` help |
+| `Tab` / `Shift-Tab` | Next / previous file |
+| `Space x` | Close file |
+| `Space b o` | Close all other files |
+| `Space b b` | Switch to the previous file |
+| `Space a` | Harpoon: pin this file |
+| `Space h` | Harpoon: list of pinned files |
+| `Space 1` … `Space 5` | Harpoon: jump to pinned file |
+| `Space \|` / `Space -` | Split right / below |
+| `Ctrl-w q` | Close split |
+| `Ctrl-h/j/k/l` | Move between splits (and out into Rex / tmux panes) |
+| `Ctrl-arrows` | Resize split |
+| `Ctrl-/` | Toggle a terminal |
+
+### Code (LSP)
+
+| Key | Action |
+|---|---|
+| `gd` / `gD` | Definition / declaration |
 | `gr` | References |
-| `gi` | Go to implementation |
+| `gI` / `gy` | Implementation / type definition |
 | `K` | Hover docs |
-| `<leader>ca` | Code action |
-| `<leader>rn` | Rename symbol |
-| `<leader>cf` | Format file |
-| `[d / ]d` | Prev / next diagnostic |
-| `<leader>de` | Show diagnostic float |
+| `Space c a` | Code action |
+| `Space c r` (or `Space r n`) | Rename symbol |
+| `Space c o` | Organise imports |
+| `Space c f` | Format file or selection |
+| `Space c R` | Rename file and update imports |
+| `Space c d` | Show the diagnostic on this line |
+| `]d` / `[d` | Next / previous diagnostic |
+| `]e` / `[e` | Next / previous error |
+| `Space t t` / `Space t b` | Diagnostics panel: project / file |
+| `Space t s` | Symbols outline |
+| `]]` / `[[` | Next / previous use of the symbol under the cursor |
+| `Space c l` | LSP status |
+| `Space c m` | Mason (install tools) |
+
+Completion: `Enter` accepts, `Tab` / `Shift-Tab` move, `Ctrl-Space` opens the menu, `Ctrl-e` dismisses.
 
 ### Git
-| Key | Action |
-|-----|--------|
-| `<leader>gg` | Open LazyGit TUI |
-| `<leader>gd` | Diff working tree |
-| `<leader>gD` | Close diffview |
-| `<leader>gh` | Current file history |
-| `<leader>gH` | Repo history |
-| `]h / [h` | Next / prev hunk |
-| `<leader>hs` | Stage hunk |
-| `<leader>hr` | Reset hunk |
-| `<leader>hS` | Stage buffer |
-| `<leader>hu` | Undo stage |
-| `<leader>hp` | Preview hunk |
-| `<leader>hb` | Blame line (full) |
-| `<leader>hB` | Toggle inline blame |
-| `<leader>hd` | Diff hunk |
 
-### Search
 | Key | Action |
-|-----|--------|
-| `/foo` | Search forward |
-| `?foo` | Search backward |
-| `n / N` | Next / prev match |
-| `*` | Search word under cursor |
-| `<leader>fg` | Search across project |
+|---|---|
+| `Space g g` | LazyGit (`q` to return) |
+| `Space g d` | Diff view of all changes (same key closes it) |
+| `Space g f` / `Space g F` | History of this file / repository |
+| `Space g s` | Changed files |
+| `Space g b` | Branches |
+| `Space g B` | Open file or selection on GitHub |
+| `]h` / `[h` | Next / previous change |
+| `Space g h s` | Stage / unstage change |
+| `Space g h r` | Discard change |
+| `Space g h p` | Preview change |
+| `Space g h b` | Blame line |
+| `Space u g` | Toggle inline blame |
 
 ### Editing
-| Key | Action |
-|-----|--------|
-| `gcc` | Toggle comment |
-| `gc` + motion | Comment motion |
-| `<A-j/k>` | Move line/selection up/down |
-| `> / <` | Indent / dedent (stays selected) |
-| `ys` + motion + char | Surround (e.g. `ysiw"`) |
-| `cs` + old + new | Change surround |
-| `ds` + char | Delete surround |
 
-### Misc
 | Key | Action |
-|-----|--------|
-| `theme` (shell) | Theme picker for the whole environment |
-| `<leader>u` | Undotree |
-| `<leader>w` | Save |
-| `<leader>q` | Quit |
-| `]t / [t` | Next / prev TODO |
-| `<leader>ft` | Find TODOs |
+|---|---|
+| `gcc` / `gc` + motion | Toggle comment |
+| `Alt-j` / `Alt-k` | Move line or selection down / up |
+| `<` / `>` (visual) | Indent, keeps the selection |
+| `ysiw"` | Surround word with `"` |
+| `cs"'` / `ds"` | Change / delete surrounding |
+| `ci"` `da(` `vif` | Change in quotes, delete around parens, select function call |
+| `]t` / `[t` | Next / previous TODO |
+| `Space s u` | Undo history |
+| `zR` / `zM` / `za` | Open all / close all / toggle fold |
+
+### Toggles and sessions
+
+| Key | Action |
+|---|---|
+| `Space u t` | Pick theme (terminal + tmux + Neovim) |
+| `Space u b` | Transparent background |
+| `Space u f` | Format on save |
+| `Space u h` | Inlay hints |
+| `Space u d` | Diagnostics |
+| `Space u w` / `Space u s` | Line wrap / spelling |
+| `Space u c` | Sticky function header |
+| `Space u z` | Zen mode |
+| `Space q s` | Restore this folder's session |
+| `Space q l` | Restore the last session |
+| `Space l` | Plugin manager |
 
 ---
 
-## LazyGit (inside `<leader>gg`)
+## Rex and tmux
+
+Same keys in both. Prefix is `Ctrl-Space`: press, release, then the key.
+
+| Key | Rex | tmux |
+|---|---|---|
+| `Ctrl-h/j/k/l` | Move between panes and Neovim splits | same |
+| `prefix \|` or `%` | Split right | same |
+| `prefix -` or `"` | Split down | same |
+| `prefix h/j/k/l` | Focus pane | same |
+| `prefix H/J/K/L` | Resize pane | same |
+| `prefix x` | Close pane | same |
+| `prefix z` | Zoom pane | same |
+| `prefix c` | New tab | New window |
+| `prefix n` / `p` | Next / previous tab | Next / previous window |
+| `prefix 1`-`9` | Go to tab | Go to window |
+| `prefix ,` | Rename tab | Rename window |
+| `prefix s` | Switch session | same |
+| `prefix $` | Rename session | same |
+| `prefix g` | LazyGit | same (popup) |
+| `prefix r` | Reload config | same |
+| `prefix Ctrl-l` | Clear screen | same |
+| `prefix prefix` | Send a real `Ctrl-Space` | same |
+
+Rex only: `prefix d` dev layout (Neovim + shell), `prefix f` float pane, `prefix =` balance splits, `prefix b` sidebar, `prefix ?` command palette. Rex's own shortcuts still work: `Cmd-D` split, `Cmd-T` tab, `Cmd-K` sessions, `Cmd-P` go to anything, `Cmd-Shift-P` palette.
+
+tmux only: `prefix f` project picker, `prefix d` detach, `prefix [` copy mode (`v` select, `y` copy, `q` quit), `Alt-Shift-h/l` previous / next window.
+
+---
+
+## Shell
+
+| Command / key | Action |
+|---|---|
+| `theme` | Pick a colour scheme for everything |
+| `cd <keyword>` / `cdi` | Jump to a directory by habit / pick one |
+| `Ctrl-r` | Search command history |
+| `Ctrl-t` / `Alt-c` | Insert a file path / change directory |
+| `Up` / `Down` | History matching what is already typed |
+| `ll` / `tree` | Detailed listing / tree |
+| `lg` / `nv` | LazyGit / Neovim |
+| `dots` | Open this repo in Neovim |
+| `zrc` / `src` | Edit / reload `~/.zshrc` |
+
+## LazyGit
+
 | Key | Action |
-|-----|--------|
-| `space` | Stage / unstage file |
+|---|---|
+| `Space` | Stage / unstage |
 | `c` | Commit |
-| `p` | Push |
-| `P` | Pull |
+| `p` / `P` | Pull / push |
 | `b` | Branches |
-| `z` | Stash |
-| `d` | Diff |
-| `e` | Edit file |
-| `q` | Quit LazyGit |
+| `z` | Undo |
+| `?` | All keys |
+| `q` | Quit |

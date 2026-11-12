@@ -1,3 +1,12 @@
+# Tinty: one theme for the terminal, tmux and Neovim.
+#
+#   theme                 fuzzy-pick a scheme (bin/theme)
+#   theme <scheme>        apply one directly
+#   tinty cycle           step through the "daily" ring below
+#
+# Neovim needs no hook: the tinted-nvim plugin watches Tinty's current scheme
+# and re-themes every running Neovim instantly.
+
 shell = "zsh -c '{}'"
 
 default-scheme = "base16-gruvbox-dark-medium"
@@ -33,15 +42,4 @@ hook = """
 mkdir -p ~/.config/tmux
 cp -f "$TINTY_THEME_FILE_PATH" ~/.config/tmux/tinted.conf
 tmux source-file ~/.config/tmux/tinted.conf 2>/dev/null || true
-"""
-
-[[items]]
-name = "neovim"
-path = "https://github.com/tinted-theming/base16-vim"
-themes-dir = "colors"
-supported-systems = ["base16"]
-
-hook = """
-mkdir -p ~/.config/nvim/colors
-cp -f "$TINTY_THEME_FILE_PATH" ~/.config/nvim/colors/tinted.vim
 """

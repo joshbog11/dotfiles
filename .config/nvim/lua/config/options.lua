@@ -1,17 +1,25 @@
--- ============================================================
--- options.lua — core vim options
--- ============================================================
+-- Core editor options. Nothing here depends on a plugin.
 
--- Force public npm registry at startup so Mason installs never hit internal Nexus
-vim.env.NPM_CONFIG_REGISTRY = "https://registry.npmjs.org"
+-- Leader keys must be set before plugins load.
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
--- Ensure Homebrew binaries are visible to nvim (Apple Silicon + Intel)
-local brew_paths = { "/opt/homebrew/bin", "/usr/local/bin" }
-for _, p in ipairs(brew_paths) do
-	if not vim.env.PATH:find(p, 1, true) then
-		vim.env.PATH = p .. ":" .. vim.env.PATH
-	end
+-- Format on save is on by default. Toggle with <leader>uf.
+vim.g.autoformat = true
+
+-- Make Homebrew tools (LSP servers, formatters, tree-sitter) visible even when
+-- Neovim is started from an app that does not read the shell profile.
+for _, dir in ipairs({ "/opt/homebrew/bin", "/usr/local/bin", "/home/linuxbrew/.linuxbrew/bin" }) do
+  if vim.uv.fs_stat(dir) and not (":" .. vim.env.PATH .. ":"):find(":" .. dir .. ":", 1, true) then
+    vim.env.PATH = dir .. ":" .. vim.env.PATH
+  end
 end
+
+-- Unused remote-plugin providers only add startup work and :checkhealth noise.
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_node_provider = 0
 
 local opt = vim.opt
 
@@ -19,145 +27,87 @@ local opt = vim.opt
 opt.number = true
 opt.relativenumber = true
 
--- Indentation
-opt.tabstop = 2
-opt.shiftwidth = 2
+-- Indentation (per-project .editorconfig files override these automatically)
 opt.expandtab = true
+opt.shiftwidth = 2
+opt.tabstop = 2
+opt.softtabstop = 2
+opt.shiftround = true
 opt.smartindent = true
-
--- Wrapping
-opt.wrap = false
+opt.breakindent = true
 
 -- Search
 opt.ignorecase = true
 opt.smartcase = true
-opt.hlsearch = false
-opt.incsearch = true
+opt.inccommand = "split" -- live preview of :s replacements
 
 -- Appearance
 opt.termguicolors = true
-opt.signcolumn = "yes"
 opt.cursorline = true
+opt.signcolumn = "yes"
+opt.wrap = false
+opt.linebreak = true
 opt.scrolloff = 8
 opt.sidescrolloff = 8
+opt.showmode = false -- the statusline shows it
+opt.laststatus = 3 -- one statusline for all windows
+opt.pumheight = 12
+opt.winborder = "rounded"
+opt.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+opt.fillchars = { eob = " ", fold = " ", foldopen = "▾", foldclose = "▸", foldsep = " ", diff = "╱" }
+opt.smoothscroll = true
+opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
--- Splits open to the right / below (feels natural)
+-- Splits
 opt.splitright = true
 opt.splitbelow = true
+opt.splitkeep = "screen"
 
--- Clipboard — sync with system clipboard
-opt.clipboard = "unnamedplus"
-
--- Persistent undo
+-- Files, undo and sessions
 opt.undofile = true
+opt.undolevels = 10000
+opt.swapfile = false
+opt.autowrite = true
+opt.confirm = true -- ask instead of failing when quitting with unsaved changes
+opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 
--- Faster update time (for gitsigns etc.)
-opt.updatetime = 250
+-- Responsiveness
+opt.updatetime = 200
 opt.timeoutlen = 300
 
--- Don't show mode in cmdline (lualine handles it)
-opt.showmode = false
+-- Editing
+opt.mouse = "a"
+opt.virtualedit = "block"
+opt.completeopt = "menu,menuone,noselect"
+opt.formatoptions = "jcroqlnt"
+opt.grepprg = "rg --vimgrep"
+opt.grepformat = "%f:%l:%c:%m"
+opt.jumpoptions = "view"
+opt.spelllang = { "en_gb", "en" }
 
--- Keep signcolumn on by default
-opt.signcolumn = "yes"
-
--- Enable treesitter for data structure folding
-vim.o.foldcolumn = "1"
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-
--- Enable built-in syntax highlighting for filetypes not handled by treesitter
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "yaml", "xml", "ts", "js", "md", "json", "sh" },
-	callback = function()
-		if not vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
-			vim.cmd("syntax on")
-		end
-	end,
-})
-
--- Force correct filetypes — overrides any bad detection from plugins or path matching
-vim.filetype.add({
-	extension = {
-		ts = "typescript",
-		tsx = "typescriptreact",
-		js = "javascript",
-		jsx = "javascriptreact",
-		mts = "typescript",
-		cts = "typescript",
-		yaml = "yaml",
-		yml = "yaml",
-		txt = "markdown",
-	},
-})
-
--- Autocmd fallback: force yaml for .yaml/.yml files that slip through
--- (swagger, helm-overrides, and similar get misdetected by plugins)
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	pattern = { "*.yaml", "*.yml" },
-	callback = function(args)
-		if vim.bo[args.buf].filetype ~= "yaml" then
-			vim.bo[args.buf].filetype = "yaml"
-		end
-	end,
-})
-
--- Reset terminal color palette when nvim exits so other apps (k9s etc.) are unaffected
-vim.api.nvim_create_autocmd("VimLeave", {
-	callback = function()
-		io.write("\027]104\007") -- reset terminal color palette
-		io.write("\027]110\007") -- reset terminal foreground
-		io.write("\027]111\007") -- reset terminal background
-		io.write("\027]112\007") -- reset cursor color
-	end,
-})
-
--- Re-attach treesitter to the first buffer after all plugins have loaded
-vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function()
-		vim.schedule(function()
-			local buf = vim.api.nvim_get_current_buf()
-			if vim.bo[buf].filetype ~= "" then
-				pcall(vim.treesitter.start, buf)
-			end
-		end)
-	end,
-})
-
--- Transparency
-local function apply_transparency(enabled)
-	if enabled then
-		vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-		vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-		vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-		vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-		vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
-		vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
-	else
-		if vim.g.colors_name then
-			vim.cmd("colorscheme " .. vim.g.colors_name)
-		end
-	end
-	vim.o.winblend = 8
-	vim.o.pumblend = 8
-	vim.g.transparent_enabled = enabled
+-- System clipboard. Over SSH there is no pbcopy on the remote machine, so use
+-- the terminal's OSC 52 support: yanks still land in your local clipboard.
+opt.clipboard = "unnamedplus"
+if vim.env.SSH_TTY then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+  }
 end
 
--- Set to true to enable by default
-vim.g.transparent_enabled = true
+-- Folding uses Tree-sitter when a parser is available and is fully open by default.
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldtext = ""
+opt.foldlevel = 99
+opt.foldlevelstart = 99
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-	callback = function()
-		if vim.g.transparent_enabled then
-			vim.schedule(function()
-				apply_transparency(true)
-			end)
-		end
-	end,
-})
-
-vim.keymap.set("n", "<leader>tt", function()
-	apply_transparency(not vim.g.transparent_enabled)
-	vim.notify("Transparency " .. (vim.g.transparent_enabled and "on" or "off"))
-end, { desc = "Toggle transparency" })
+-- Terminal title. Rex reads this to tell whether a pane is running Neovim, so
+-- Ctrl-h/j/k/l can be handed to Neovim instead of moving the Rex focus.
+-- Keep the "nvim" prefix if you change it (see ~/.config/rex/init.lua).
+opt.title = true
+opt.titlestring = "nvim: %t"
+opt.titleold = vim.fn.fnamemodify(vim.o.shell, ":t")

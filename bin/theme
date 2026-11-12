@@ -1,30 +1,25 @@
 #!/usr/bin/env bash
-
+# Pick a colour scheme for the terminal, tmux and Neovim at once.
+#   theme            fuzzy picker
+#   theme <scheme>   apply directly, e.g. theme base16-gruvbox-dark-medium
 set -euo pipefail
 
 if ! command -v tinty >/dev/null 2>&1; then
-	echo "tinty is not installed"
-	exit 1
+  echo "theme: tinty is not installed (run ~/dotfiles/install.sh)" >&2
+  exit 1
 fi
 
 if [[ $# -gt 0 ]]; then
-	tinty apply "$1"
-	exit 0
+  exec tinty apply "$1"
 fi
 
 if ! command -v fzf >/dev/null 2>&1; then
-	echo "fzf is not installed"
-	exit 1
+  echo "theme: fzf is not installed; use: theme <scheme>" >&2
+  exit 1
 fi
 
-scheme="$(
-	tinty list |
-		fzf \
-			--prompt="Theme > " \
-			--height=60% \
-			--border
-)"
+current="$(tinty current 2>/dev/null || true)"
+scheme="$(tinty list | fzf --prompt="Theme > " --header="current: ${current:-none}" --height=60% --border || true)"
 
 [[ -z "$scheme" ]] && exit 0
-
 tinty apply "$scheme"
